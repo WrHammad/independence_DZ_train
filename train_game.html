@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة قطار الاستقلال: 11 ديسمبر 1960</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        :root {
+            --dz-green: #006633;
+            --dz-red: #D21034;
+            --dz-white: #ffffff;
+            --bg-color: #f4f6f9;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- شاشات اللعبة --- */
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .active-screen {
+            display: flex;
+        }
+
+        /* --- شاشة البداية --- */
+        #start-screen {
+            background: linear-gradient(135deg, white 0%, #e8f5e9 100%);
+        }
+
+        .intro-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            border-top: 5px solid var(--dz-red);
+            border-bottom: 5px solid var(--dz-green);
+        }
+
+        /* تنسيق اسم الكاتب */
+        .author-badge {
+            display: inline-block;
+            background-color: #f1f1f1;
+            color: #333;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ddd;
+        }
+
+        .rules-list {
+            text-align: right;
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .rules-list li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            position: relative;
+            padding-right: 25px;
+        }
+
+        .rules-list li::before {
+            content: '✔';
+            position: absolute;
+            right: 0;
+            color: var(--dz-green);
+            font-weight: bold;
+        }
+
+        /* --- شريط القطار (المسار من اليمين لليسار) --- */
+        .track-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            position: relative;
+            padding-top: 50px;
+        }
+
+        .track-line {
+            height: 8px;
+            background: #ccc;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row-reverse;
+        }
+
+        .station-dot {
+            width: 35px;
+            height: 35px;
+            background: #bdc3c7;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            z-index: 2;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .station-dot.active { background: var(--dz-green); transform: scale(1.1); }
+        .station-dot.passed { background: var(--dz-green); opacity: 0.7; }
+
+        /* أيقونة القطار */
+        #train-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 3rem;
+            transition: right 1.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 5;
+            transform: translateX(50%);
+        }
+
+        /* --- منطقة اللعب --- */
+        .game-area {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 95%;
+            max-width: 900px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        h2 { color: var(--dz-green); margin-bottom: 5px; }
+        .question-text { font-size: 1.1rem; color: #555; margin-bottom: 20px; font-weight: bold; }
+
+        /* حاوية السحب والإفلات */
+        .slots-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .slot {
+            width: 140px;
+            min-height: 180px;
+            border: 2px dashed #95a5a6;
+            border-radius: 8px;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 5px;
+            position: relative;
+        }
+        
+        .slot-header {
+            background: var(--dz-red);
+            color: white;
+            width: 100%;
+            padding: 5px 0;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .slot.filled { border-style: solid; border-color: var(--dz-green); background: #e8f5e9; }
+
+        /* البطاقات */
+        .cards-pool {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 150px;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+
+        .card {
+            width: 130px;
+            height: 140px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            user-select: none;
+            line-height: 1.3;
+        }
+        .card:hover { transform: translateY(-3px); border-color: var(--dz-green); }
+        .card strong { color: var(--dz-red); display: block; margin-bottom: 5px; }
+
+        /* أزرار الخيارات (للمرحلة 3) */
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .quiz-btn {
+            background: white;
+            border: 2px solid #ccc;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: right;
+            font-family: 'Cairo', sans-serif;
+        }
+        .quiz-btn:hover { border-color: var(--dz-green); background: #f0fff4; }
+        .quiz-btn.selected { background: var(--dz-green); color: white; border-color: var(--dz-green); }
+
+        /* شريط المحاولات */
+        .attempts-bar {
+            color: var(--dz-red);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .main-btn {
+            background-color: var(--dz-green);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            margin-top: 20px;
+        }
+        .main-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .feedback-msg { margin-top: 10px; font-weight: bold; height: 30px; }
+        .error { color: var(--dz-red); }
+        .success { color: var(--dz-green); }
+
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="screen active-screen">
+        <div class="intro-box">
+            <h1>🚂 قطار الاستقلال</h1>
+            <h3 style="color: #666; margin-bottom: 5px;">مظاهرات 11 ديسمبر 1960</h3>
+            
+            <div class="author-badge">من إعداد الكاتب حماد بن عيسى</div>
+
+            <p>أهلاً بك أيها البطل في رحلة عبر الزمن لإثبات استقلال الجزائر.</p>
+            
+            <ul class="rules-list">
+                <li>اللعبة تتكون من <strong>4 محطات</strong> رئيسية.</li>
+                <li>يجب ترتيب الأحداث أو الإجابة بشكل صحيح لتحريك القطار.</li>
+                <li>لديك <strong>محاولتان (2)</strong> فقط في كل محطة.</li>
+                <li>إذا فشلت في المحاولتين، ستخسر اللعبة ويعود القطار للبداية.</li>
+            </ul>
+
+            <button class="main-btn" onclick="startGame()">ابدأ الرحلة 🚩</button>
+        </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <header>
+            <h2 style="margin:0; color:#333;">قطار الاستقلال</h2>
+        </header>
+
+        <div class="track-container">
+            <div id="train-icon">🚂</div>
+            <div class="track-line">
+                <div class="station-dot" id="st-4">4</div>
+                <div class="station-dot" id="st-3">3</div>
+                <div class="station-dot" id="st-2">2</div>
+                <div class="station-dot active" id="st-1">1</div>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="attempts-bar" id="attempts-display">المحاولات المتبقية: 2</div>
+            <h2 id="level-title">المحطة 1</h2>
+            <p class="question-text" id="level-desc">الوصف...</p>
+
+            <div id="level-content"></div>
+
+            <div class="feedback-msg" id="feedback"></div>
+
+            <button class="main-btn" id="action-btn" onclick="checkAnswer()">تحقق من الإجابة</button>
+        </div>
+    </div>
+
+    <div id="game-over-screen" class="screen" style="background-color: #ffebee;">
+        <h1 style="color: var(--dz-red);">❌ توقف القطار!</h1>
+        <p style="font-size: 1.2rem;">لقد استنفدت جميع المحاولات في هذه المحطة.</p>
+        <button class="main-btn" onclick="location.reload()" style="background-color: #c0392b;">إعادة المحاولة</button>
+    </div>
+
+    <div id="victory-screen" class="screen" style="background-color: #e8f5e9;">
+        <h1 style="color: var(--dz-green); font-size: 3rem;">🎉 وصل القطار!</h1>
+        <h2 style="color: var(--dz-red);">"تحيا الجزائر حرة مستقلة"</h2>
+        <div class="author-badge">من إعداد الكاتب حماد بن عيسى</div>
+        <p style="font-size: 1.2rem;">لقد أتممت جميع المحطات بنجاح وأثبت استحقاق الاستقلال.</p>
+        <button class="main-btn" onclick="location.reload()">لعبة جديدة</button>
+    </div>
+
+    <script>
+        const levels = [
+            {
+                type: 'drag',
+                title: "المحطة الأولى: التسلسل الزمني",
+                desc: "ضع كل حدث تاريخي في تاريخه الصحيح:",
+                slots: ["04 نوفمبر 1960", "09 ديسمبر 1960", "10 ديسمبر 1960", "11 ديسمبر 1960", "20 ديسمبر 1960"],
+                items: [
+                    { id: 1, text: "خطاب ديغول ومشروع 'الجزائر جزائرية'" },
+                    { id: 2, text: "انطلاق الشرارة الأولى من عين تموشنت" },
+                    { id: 3, text: "اتساع المظاهرات لتشمل وهران" },
+                    { id: 4, text: "يوم الذروة وخروج الجماهير العارمة في العاصمة" },
+                    { id: 5, text: "انتصار دبلوماسي في الأمم المتحدة" }
+                ]
+            },
+            {
+                type: 'drag',
+                title: "المحطة الثانية: المسار الجغرافي",
+                desc: "رتب انتقال المظاهرات بين المدن حسب الجدول الزمني:",
+                slots: ["1. الانطلاق", "2. اليوم الأول", "3. التصعيد", "4. الذروة", "5. التعميم"],
+                items: [
+                    { id: 1, text: "عين تموشنت (يوم وصول ديغول)" },
+                    { id: 2, text: "تلمسان (رفع العلم رغم البرد)" },
+                    { id: 3, text: "وهران (ليلة مرعبة وصدامات)" },
+                    { id: 4, text: "الجزائر العاصمة (بلكور والقصبة)" },
+                    { id: 5, text: "قسنطينة وعنابة وبجاية (الغليان الشعبي)" }
+                ]
+            },
+            {
+                type: 'quiz',
+                title: "المحطة الثالثة: الرموز",
+                desc: "ما هو الرمز الذي كان المتظاهرون يرفعونه بفخر خلال مظاهرات 11 ديسمبر 1960؟",
+                options: [
+                    { id: 'A', text: "A. الشعار الوطني" },
+                    { id: 'B', text: "B. العلم الجزائري" }, 
+                    { id: 'C', text: "C. صور قادة الثورة" }
+                ],
+                correctAnswer: 'B'
+            },
+            {
+                type: 'drag',
+                title: "المحطة الرابعة: النتائج",
+                desc: "رتب نتائج المظاهرات وتأثيرها على الثورة:",
+                slots: ["1. النتيجة السياسية", "2. النتيجة العسكرية", "3. النتيجة الدبلوماسية", "4. النتيجة الاستراتيجية", "5. الخلاصة"],
+                items: [
+                    { id: 1, text: "إفشال خطة ديغول وسقوط خرافة 'الجزائر فرنسية'" },
+                    { id: 2, text: "تخفيف الضغط العسكري على الجبال" },
+                    { id: 3, text: "اعتراف الأمم المتحدة بحق تقرير المصير" },
+                    { id: 4, text: "إجبار ديغول على التفاوض مع الجبهة" },
+                    { id: 5, text: "التأكد أن الاستقلال آتٍ لا محالة" }
+                ]
+            }
+        ];
+
+        let currentLevel = 0;
+        let attempts = 2;
+        let currentDragState = [null, null, null, null, null];
+        let selectedQuizOption = null;
+
+        function startGame() {
+            document.getElementById('start-screen').classList.remove('active-screen');
+            document.getElementById('game-screen').classList.add('active-screen');
+            loadLevel(0);
+        }
+
+        function loadLevel(levelIndex) {
+            currentLevel = levelIndex;
+            const levelData = levels[levelIndex];
+            attempts = 2;
+            
+            document.getElementById('level-title').innerText = levelData.title;
+            document.getElementById('level-desc').innerText = levelData.desc;
+            document.getElementById('attempts-display').innerText = `المحاولات المتبقية: ${attempts}`;
+            document.getElementById('feedback').innerText = "";
+            document.getElementById('feedback').className = "feedback-msg";
+            
+            const btn = document.getElementById('action-btn');
+            btn.innerText = "تحقق من الإجابة";
+            btn.onclick = checkAnswer;
+            btn.style.display = 'inline-block';
+
+            const contentDiv = document.getElementById('level-content');
+            contentDiv.innerHTML = "";
+
+            if (levelData.type === 'drag') {
+                currentDragState = [null, null, null, null, null];
+                setupDragLevel(contentDiv, levelData);
+            } else if (levelData.type === 'quiz') {
+                selectedQuizOption = null;
+                setupQuizLevel(contentDiv, levelData);
+            }
+
+            updateTrainProgress();
+        }
+
+        function setupDragLevel(container, data) {
+            const slotsDiv = document.createElement('div');
+            slotsDiv.className = 'slots-container';
+            
+            data.slots.forEach((label, idx) => {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.id = `slot-${idx}`;
+                
+                const header = document.createElement('div');
+                header.className = 'slot-header';
+                header.innerText = label;
+                
+                slot.appendChild(header);
+                slot.onclick = () => returnCard(idx);
+                slotsDiv.appendChild(slot);
+            });
+            container.appendChild(slotsDiv);
+
+            const poolDiv = document.createElement('div');
+            poolDiv.className = 'cards-pool';
+            poolDiv.id = 'pool';
+            
+            let shuffled = [...data.items].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.id = `card-${item.id}`;
+                card.innerHTML = `<p>${item.text}</p>`;
+                card.onclick = () => selectCard(item, card);
+                poolDiv.appendChild(card);
+            });
+            container.appendChild(poolDiv);
+        }
+
+        function setupQuizLevel(container, data) {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'quiz-options';
+
+            data.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.innerText = opt.text;
+                btn.onclick = () => {
+                    document.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedQuizOption = opt.id;
+                };
+                optionsDiv.appendChild(btn);
+            });
+            container.appendChild(optionsDiv);
+        }
+
+        function selectCard(item, cardElem) {
+            const emptyIdx = currentDragState.indexOf(null);
+            if (emptyIdx !== -1) {
+                const slot = document.getElementById(`slot-${emptyIdx}`);
+                slot.appendChild(cardElem);
+                slot.classList.add('filled');
+                currentDragState[emptyIdx] = item.id;
+            }
+        }
+
+        function returnCard(idx) {
+            if (currentDragState[idx] !== null) {
+                const slot = document.getElementById(`slot-${idx}`);
+                const card = slot.querySelector('.card');
+                if (card) {
+                    document.getElementById('pool').appendChild(card);
+                    slot.classList.remove('filled');
+                    currentDragState[idx] = null;
+                }
+            }
+        }
+
+        function updateTrainProgress() {
+            const step = 90 / 3; 
+            const position = currentLevel * step;
+            
+            document.getElementById('train-icon').style.right = `${position}%`;
+
+            for(let i=1; i<=4; i++) {
+                const dot = document.getElementById(`st-${i}`);
+                if (i <= currentLevel + 1) {
+                    dot.classList.add('passed');
+                }
+                if (i === currentLevel + 1) {
+                    dot.classList.add('active');
+                    dot.classList.remove('passed');
+                }
+            }
+        }
+
+        function checkAnswer() {
+            const levelData = levels[currentLevel];
+            let isCorrect = false;
+
+            if (levelData.type === 'drag') {
+                if (currentDragState.includes(null)) {
+                    showMessage("الرجاء ملء جميع الخانات!", "error");
+                    return;
+                }
+                const correctSeq = [1, 2, 3, 4, 5];
+                isCorrect = JSON.stringify(currentDragState) === JSON.stringify(correctSeq);
+            
+            } else if (levelData.type === 'quiz') {
+                if (!selectedQuizOption) {
+                    showMessage("الرجاء اختيار إجابة!", "error");
+                    return;
+                }
+                isCorrect = (selectedQuizOption === levelData.correctAnswer);
+            }
+
+            if (isCorrect) {
+                showMessage("أحسنت! إجابة صحيحة ✅", "success");
+                document.getElementById('action-btn').innerText = "الانتقال للمحطة التالية ⬅";
+                document.getElementById('action-btn').onclick = nextLevel;
+                if(document.getElementById('pool')) document.getElementById('pool').style.pointerEvents = 'none';
+                if(document.querySelector('.quiz-options')) document.querySelector('.quiz-options').style.pointerEvents = 'none';
+
+            } else {
+                attempts--;
+                document.getElementById('attempts-display').innerText = `المحاولات المتبقية: ${attempts}`;
+                
+                if (attempts > 0) {
+                    showMessage("إجابة خاطئة! حاول مرة أخرى ❌", "error");
+                    if (levelData.type === 'drag') {
+                        setTimeout(() => {
+                            resetDragCards();
+                        }, 1000);
+                    }
+                } else {
+                    document.getElementById('game-screen').classList.remove('active-screen');
+                    document.getElementById('game-over-screen').classList.add('active-screen');
+                }
+            }
+        }
+
+        function resetDragCards() {
+            for(let i=0; i<5; i++) {
+                returnCard(i);
+            }
+            showMessage("تم إعادة البطاقات.. ركز جيداً!", "error");
+        }
+
+        function showMessage(text, type) {
+            const el = document.getElementById('feedback');
+            el.innerText = text;
+            el.className = "feedback-msg " + type;
+        }
+
+        function nextLevel() {
+            if (currentLevel < 3) {
+                loadLevel(currentLevel + 1);
+            } else {
+                document.getElementById('train-icon').style.right = "95%"; 
+                setTimeout(() => {
+                    document.getElementById('game-screen').classList.remove('active-screen');
+                    document.getElementById('victory-screen').classList.add('active-screen');
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -3,388 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قطار الاستقلال - تعليمات اللعب</title>
+    <title>قطار الاستقلال - الإصدار الاحترافي</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap');
 
+        /* 1. إعداد المتغيرات (CSS Variables) لسهولة الصيانة */
         :root {
-            --dz-green: #006633;
-            --dz-red: #D21034;
-            --bg-color: #f0f4f8;
-            --panel-bg: #ffffff;
+            --primary-color: #006633;  /* أخضر الجزائر */
+            --accent-color: #D21034;   /* أحمر الجزائر */
+            --bg-body: #f4f7f6;
+            --bg-surface: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        /* 2. إعادة تعيين أساسية (Reset & Base) */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            color: #333;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
-        /* --- الرأس (Header) --- */
-        header {
-            background: var(--panel-bg);
-            border-bottom: 4px solid var(--dz-red);
+        /* 3. مكونات الواجهة المشتركة (Components) */
+        .btn {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+        }
+        .btn-primary:active { transform: scale(0.96); }
+
+        .author-badge {
+            background: #f1f2f6;
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        /* 4. الرأس (Header) - Flexbox */
+        .app-header {
+            background: var(--bg-surface);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 3px solid var(--accent-color);
             z-index: 10;
-        }
-
-        .header-title h1 { margin: 0; font-size: 1.2rem; color: #2c3e50; }
-        .author-badge { font-size: 0.8rem; color: #666; background: #eee; padding: 4px 12px; border-radius: 15px; }
-
-        /* --- شريط القطار --- */
-        .train-section {
-            background: #e9ecef;
-            padding: 15px 0;
+            box-shadow: var(--shadow-sm);
+            height: 70px;
             flex-shrink: 0;
-            position: relative;
         }
-        
-        .track-container {
+
+        .brand h1 { margin: 0; font-size: 1.2rem; color: var(--text-main); }
+        .game-stats { font-weight: 700; color: var(--accent-color); background: #fff0f0; padding: 5px 15px; border-radius: 20px; }
+
+        /* 5. شريط التقدم (Progress Bar) */
+        .train-tracker {
+            background: #e9ecef;
+            padding: 20px 0 10px 0;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .track-rail {
             width: 90%;
             max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .track-line {
             height: 6px;
             background: #bdc3c7;
             border-radius: 3px;
+            margin: 0 auto;
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-direction: row-reverse;
         }
 
-        .station-dot {
-            width: 30px;
-            height: 30px;
+        .station-node {
+            width: 28px;
+            height: 28px;
             background: #95a5a6;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9rem;
-            z-index: 2;
             border: 3px solid #e9ecef;
-            transition: all 0.3s;
+            border-radius: 50%;
+            display: grid; place-items: center; /* Grid للتوسط */
+            color: white; font-size: 0.8rem; font-weight: bold;
+            z-index: 2; transition: var(--transition);
         }
-        .station-dot.active { background: var(--dz-green); transform: scale(1.2); box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3); }
-        .station-dot.passed { background: var(--dz-green); opacity: 0.6; }
+        .station-node.active { background: var(--primary-color); transform: scale(1.3); box-shadow: 0 0 0 4px rgba(0, 102, 51, 0.2); }
+        .station-node.passed { background: var(--primary-color); opacity: 0.5; }
 
-        #train-icon {
-            position: absolute;
-            top: -12px;
-            right: 0;
-            font-size: 2.2rem;
-            transition: right 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95);
-            z-index: 5;
+        #train-mover {
+            position: absolute; top: -18px; right: 0;
+            font-size: 2.2rem; z-index: 5;
             transform: translateX(50%);
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+            transition: right 1.2s cubic-bezier(0.5, 0, 0, 1);
+            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.2));
         }
 
-        /* --- التخطيط الرئيسي --- */
-        .main-layout {
+        /* 6. التخطيط الرئيسي (Main Layout) - Grid & Flex Hybrid */
+        .game-layout {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* الافتراضي: عمودي (للهاتف) */
             flex-grow: 1;
             overflow: hidden;
             position: relative;
         }
 
-        /* --- منطقة الزمن --- */
-        .timeline-panel {
+        /* --- منطقة الجدول الزمني (Timeline) --- */
+        .timeline-section {
             flex-grow: 1;
             padding: 15px;
             overflow-y: auto;
-            background: var(--bg-color);
-            padding-bottom: 120px;
-        }
-
-        .level-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .slot-container {
+            background: var(--bg-body);
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-width: 800px;
-            margin: 0 auto;
+            padding-bottom: 140px; /* مساحة للبطاقات في الهاتف */
         }
 
-        .slot {
-            display: flex;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            min-height: 70px;
-            opacity: 0.6;
-            filter: grayscale(1);
-            transition: all 0.3s ease;
-        }
-
-        .slot.active-slot {
-            opacity: 1;
-            filter: grayscale(0);
-            border-color: var(--dz-green);
-            transform: scale(1.02);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            z-index: 2;
-        }
-        
-        .slot.filled {
-            opacity: 1;
-            filter: grayscale(0);
-            background: #e8f5e9;
-            border-color: var(--dz-green);
-        }
-
-        .slot-time {
-            width: 80px;
-            background: #f8f9fa;
-            border-left: 2px solid #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--dz-red);
-            padding: 5px;
-            border-radius: 0 8px 8px 0;
-            flex-shrink: 0;
-        }
-
-        .slot-answer {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            font-size: 0.9rem;
-            color: #333;
-            text-align: center;
-        }
-
-        /* --- منطقة البطاقات --- */
-        .cards-dock {
-            background: white;
-            border-top: 3px solid var(--dz-green);
+        .level-header {
+            background: var(--bg-surface);
             padding: 15px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: auto;
-            max-height: 40vh;
-            overflow-y: auto;
-            z-index: 20;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .dock-header {
-            font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        /* تصميم الخانات (Slots) */
+        .slots-wrapper {
+            display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
-        .card {
+        .slot-item {
+            display: flex;
+            background: var(--bg-surface);
+            border: 2px solid #e1e1e1;
+            border-radius: var(--radius-md);
+            min-height: 70px;
+            opacity: 0.5;
+            filter: grayscale(1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slot-item.active {
+            opacity: 1; filter: grayscale(0);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0, 102, 51, 0.1);
+            transform: translateX(-5px);
+            z-index: 2;
+        }
+        .slot-item.filled {
+            opacity: 1; filter: grayscale(0);
+            background: #e8f5e9; border-color: var(--primary-color);
+        }
+
+        .slot-label {
             background: #f8f9fa;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            width: 85px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-weight: bold; color: var(--accent-color);
+            font-size: 0.85rem; border-left: 1px solid #eee; flex-shrink: 0;
+        }
+        
+        .slot-value {
+            flex-grow: 1; display: flex; align-items: center; justify-content: center;
+            padding: 10px; font-size: 0.95rem; text-align: center;
+        }
+
+        /* --- منطقة البطاقات (Cards Dock) --- */
+        .interaction-dock {
+            background: var(--bg-surface);
+            border-top: 1px solid #eee;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            padding: 15px;
+            position: absolute; bottom: 0; left: 0; right: 0;
+            z-index: 20;
+            max-height: 40vh;
+        }
+
+        .dock-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; }
+
+        /* استخدام Grid للبطاقات */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* عمودين للهاتف */
+            gap: 10px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: var(--radius-md);
             padding: 12px;
+            text-align: center;
             font-size: 0.85rem;
             cursor: pointer;
-            text-align: center;
-            display: flex;
+            transition: var(--transition);
+            display: flex; align-items: center; justify-content: center;
+            min-height: 60px;
+            user-select: none;
+        }
+        .game-card:hover { border-color: var(--primary-color); background: #fff; }
+        .game-card:active { transform: scale(0.95); background: #e8f5e9; }
+
+        /* 7. التصميم المتجاوب (Media Queries) - Desktop Mode */
+        @media (min-width: 768px) {
+            .game-layout {
+                display: grid; /* تحويل التخطيط الرئيسي لشبكة */
+                grid-template-columns: 1fr 320px; /* الجدول يسار، البطاقات يمين (ثابتة العرض) */
+                overflow: hidden;
+            }
+
+            .timeline-section {
+                padding-bottom: 20px; /* إزالة الحشوة السفلية الكبيرة */
+            }
+
+            .interaction-dock {
+                position: relative; /* إلغاء التثبيت المطلق */
+                border-top: none;
+                border-right: 1px solid #eee;
+                max-height: none;
+                background: #fdfdfd;
+                overflow-y: auto;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr; /* عمود واحد للبطاقات في الجانب */
+                gap: 15px;
+            }
+
+            .game-card { font-size: 0.95rem; padding: 20px; }
+            .slot-item.active { transform: scale(1.02) translateX(0); }
+        }
+
+        /* 8. الشاشات المنبثقة (Overlays) */
+        .overlay-screen {
+            position: fixed; inset: 0;
+            background: var(--bg-surface);
+            z-index: 100;
+            display: none; /* مخفي افتراضياً */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 60px;
-            transition: transform 0.1s, background 0.2s;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.05);
+            text-align: center;
+            animation: fadeIn 0.4s ease;
         }
-        .card:hover { border-color: var(--dz-green); background: #fff; }
-        .card:active { transform: scale(0.96); background: #e8f5e9; }
+        .overlay-screen.active { display: flex; }
 
-        .quiz-option { width: 100%; margin-bottom: 8px; font-size: 1rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* --- استعلامات الوسائط (للكمبيوتر) --- */
-        @media (min-width: 768px) {
-            .main-layout { flex-direction: row; }
-            .timeline-panel { width: 60%; padding-bottom: 20px; border-left: 1px solid #ddd; }
-            .cards-dock { position: static; width: 40%; max-height: none; border-top: none; border-right: 3px solid var(--dz-green); background: #fdfdfd; }
-            .cards-grid { grid-template-columns: 1fr; gap: 15px; }
-            .card { font-size: 1rem; padding: 15px; }
-            .slot-time { width: 100px; font-size: 0.9rem; }
-            .slot-answer { font-size: 1.1rem; }
+        .modal-card {
+            background: white; padding: 40px; border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md); max-width: 450px; width: 90%;
+            border-top: 5px solid var(--accent-color);
         }
 
-        /* --- الشاشات والرسائل --- */
-        .screen { display: none; height: 100%; width: 100%; flex-direction: column; justify-content: center; align-items: center; background: white; position: absolute; top: 0; left: 0; z-index: 100; }
-        .screen.active { display: flex; }
+        .instruction-list { text-align: right; margin: 25px 0; padding-right: 10px; list-style: none; }
+        .instruction-list li { margin-bottom: 10px; color: #555; font-size: 0.95rem; position: relative; padding-right: 25px; }
+        .instruction-list li::before { content: '✔'; color: var(--primary-color); position: absolute; right: 0; font-weight: bold; }
 
-        .popup-msg {
+        /* رسائل Feedback */
+        .toast-msg {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.85); color: white; padding: 15px 30px;
-            border-radius: 50px; font-size: 1.2rem; z-index: 200;
-            display: none; animation: popUp 0.3s;
+            background: rgba(44, 62, 80, 0.9); color: white;
+            padding: 15px 30px; border-radius: 50px; font-weight: 600;
+            z-index: 200; display: none; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popUp { from {transform:translate(-50%,-50%) scale(0.5); opacity:0;} to {transform:translate(-50%,-50%) scale(1); opacity:1;} }
-
-        .btn-start { background: var(--dz-green); color: white; padding: 12px 40px; border-radius: 30px; border: none; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 0 #004d26; margin-top: 20px;}
-        .btn-start:active { transform: translateY(4px); box-shadow: none; }
-
-        /* تنسيق قائمة التعليمات */
-        .instructions-list {
-            text-align: right;
-            padding: 0 20px 0 0;
-            margin: 20px 0;
-            list-style: none;
-        }
-        .instructions-list li {
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-            position: relative;
-            color: #555;
-        }
-        .instructions-list li::before {
-            content: '✔';
-            color: var(--dz-green);
-            position: absolute;
-            right: -25px;
-            font-weight: bold;
-        }
+        @keyframes popIn { from {transform:translate(-50%,-50%) scale(0.5); opacity:0;} to {transform:translate(-50%,-50%) scale(1); opacity:1;} }
 
     </style>
 </head>
 <body>
 
-    <div id="feedback-msg" class="popup-msg"></div>
+    <div id="toast" class="toast-msg"></div>
 
-    <div id="start-screen" class="screen active" style="background: linear-gradient(135deg, #fff 0%, #e0f2f1 100%);">
-        <div style="background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); max-width: 500px; width: 90%; text-align: center; border-top: 5px solid var(--dz-red);">
-            
-            <h1 style="color: var(--dz-green); font-size: 1.8rem; margin-bottom: 5px;">🚂 قطار الاستقلال</h1>
+    <div id="screen-start" class="overlay-screen active">
+        <div class="modal-card">
+            <h1 style="color: var(--primary-color); margin-bottom: 5px;">🚂 قطار الاستقلال</h1>
             <div class="author-badge">إعداد: الكاتب حماد بن عيسى</div>
             
-            <h3 style="color: #333; margin-top: 25px; border-bottom: 2px dashed #ccc; display: inline-block; padding-bottom: 5px;">كيفية اللعب</h3>
-            
-            <ul class="instructions-list">
-                <li>تتكون اللعبة من <strong>4 محطات</strong> تاريخية نحو الاستقلال.</li>
-                <li>في كل محطة، ستظهر لك <strong>خانة واحدة نشطة</strong> (مضاءة).</li>
-                <li>اختر <strong>البطاقة الصحيحة</strong> من القائمة لملء الخانة وتشغيل القطار.</li>
-                <li>انتبه! لديك <strong>محاولتان فقط</strong> لكل محطة.</li>
+            <h3 style="margin-top: 25px; color: var(--text-main);">تعليمات اللعب</h3>
+            <ul class="instruction-list">
+                <li>اللعبة مقسمة إلى <strong>4 محطات</strong> تاريخية.</li>
+                <li>يوجد <strong>خانة واحدة نشطة</strong> في كل مرة.</li>
+                <li>انقر على <strong>البطاقة الصحيحة</strong> لإكمال المسار.</li>
+                <li>لديك <strong>محاولتان</strong> فقط لكل محطة!</li>
             </ul>
-
-            <button class="btn-start" onclick="startGame()">ابدأ اللعب الآن 🚩</button>
+            <button class="btn btn-primary" onclick="App.start()">ابدأ الرحلة 🚩</button>
         </div>
     </div>
 
-    <div id="game-ui" class="screen" style="display: none; background: var(--bg-color);">
-        <header>
-            <div class="header-title">
+    <div id="screen-game" class="overlay-screen" style="display: none; background: var(--bg-body); justify-content: flex-start;">
+        
+        <header class="app-header">
+            <div class="brand">
                 <h1>قطار الاستقلال</h1>
                 <div class="author-badge">حماد بن عيسى</div>
             </div>
-            <div style="font-weight: bold; color: var(--dz-red);" id="attempts-display">المحاولات: 2</div>
+            <div class="game-stats" id="stats-attempts">المحاولات: 2</div>
         </header>
 
-        <div class="train-section">
-            <div class="track-container">
-                <div id="train-icon">🚂</div>
-                <div class="track-line">
-                    <div class="station-dot" id="st-4">4</div>
-                    <div class="station-dot" id="st-3">3</div>
-                    <div class="station-dot" id="st-2">2</div>
-                    <div class="station-dot active" id="st-1">1</div>
-                </div>
+        <div class="train-tracker">
+            <div class="track-rail">
+                <div class="station-node" id="node-4">4</div>
+                <div class="station-node" id="node-3">3</div>
+                <div class="station-node" id="node-2">2</div>
+                <div class="station-node active" id="node-1">1</div>
+                <div id="train-mover">🚂</div>
             </div>
         </div>
 
-        <div class="main-layout">
-            <div class="timeline-panel" id="timeline-panel">
-                <div class="level-info">
-                    <span id="level-title" style="font-weight:bold; color:var(--dz-green);">المحطة الأولى</span>
-                    <span id="level-desc" style="font-size:0.9rem; color:#555;">وصف المهمة</span>
+        <div class="game-layout">
+            <section class="timeline-section">
+                <div class="level-header">
+                    <span id="lvl-title" style="font-weight:bold; color:var(--primary-color);">المحطة الأولى</span>
+                    <span id="lvl-desc" style="font-size:0.85rem; color:var(--text-muted);">الوصف</span>
                 </div>
-                <div id="slots-wrapper" class="slot-container"></div>
-            </div>
+                <div id="timeline-container" class="slots-wrapper">
+                    </div>
+            </section>
 
-            <div class="cards-dock">
-                <div class="dock-header" id="dock-title">انقر على البطاقة المناسبة:</div>
-                <div id="cards-grid" class="cards-grid"></div>
-            </div>
+            <aside class="interaction-dock">
+                <div class="dock-title" id="dock-hint">اختر البطاقة المناسبة:</div>
+                <div id="cards-container" class="cards-grid">
+                    </div>
+            </aside>
         </div>
     </div>
 
-    <div id="win-screen" class="screen">
-        <h1 style="font-size: 4rem;">🇩🇿</h1>
-        <h1 style="color: var(--dz-green);">مبروك!</h1>
-        <h2 style="color: var(--dz-red);">"تحيا الجزائر حرة مستقلة"</h2>
+    <div id="screen-win" class="overlay-screen">
+        <div style="font-size: 5rem;">🇩🇿</div>
+        <h1 style="color: var(--primary-color);">مبروك!</h1>
+        <h2 style="color: var(--accent-color);">"تحيا الجزائر حرة مستقلة"</h2>
         <div class="author-badge">إعداد: الكاتب حماد بن عيسى</div>
-        <button class="btn-start" onclick="location.reload()">لعبة جديدة</button>
+        <button class="btn btn-primary" style="margin-top:20px;" onclick="location.reload()">لعبة جديدة</button>
     </div>
 
-    <div id="lose-screen" class="screen">
-        <h1 style="font-size: 4rem;">⛔</h1>
-        <h1 style="color: #333;">توقف القطار</h1>
-        <p>لقد نفذت جميع محاولاتك.</p>
-        <button class="btn-start" style="background: var(--dz-red);" onclick="location.reload()">حاول مجدداً</button>
+    <div id="screen-lose" class="overlay-screen">
+        <div style="font-size: 5rem;">⛔</div>
+        <h1>توقف القطار</h1>
+        <p style="color: var(--text-muted);">لقد نفذت جميع المحاولات.</p>
+        <button class="btn btn-primary" style="background:var(--accent-color);" onclick="location.reload()">حاول مجدداً</button>
     </div>
 
     <script>
-        const levels = [
+        /**
+         * بيانات اللعبة
+         * مصدر البيانات: وثيقة 11 ديسمبر 1960
+         */
+        const GameData = [
             {
                 type: 'sequence',
-                title: "1. التواريخ",
+                title: "1. التسلسل الزمني",
                 desc: "طابق الحدث مع تاريخه:",
                 slots: ["04 نوفمبر", "09 ديسمبر", "10 ديسمبر", "11 ديسمبر", "20 ديسمبر"],
-                correctSequence: [1, 2, 3, 4, 5],
-                items: [
+                correctIds: [1, 2, 3, 4, 5],
+                cards: [
                     { id: 1, text: "خطاب ديغول 'الجزائر جزائرية'" },
                     { id: 2, text: "انطلاق الشرارة (عين تموشنت)" },
                     { id: 3, text: "اتساع المظاهرات (وهران)" },
-                    { id: 4, text: "الذروة (العاصمة)" },
+                    { id: 4, text: "الذروة (الجزائر العاصمة)" },
                     { id: 5, text: "انتصار الأمم المتحدة" }
                 ]
             },
             {
                 type: 'sequence',
-                title: "2. الجغرافيا",
-                desc: "تتبع مسار المظاهرات:",
+                title: "2. المسار الجغرافي",
+                desc: "تتبع انتقال المظاهرات:",
                 slots: ["1. الانطلاق", "2. اليوم الأول", "3. التصعيد", "4. الذروة", "5. التعميم"],
-                correctSequence: [1, 2, 3, 4, 5],
-                items: [
+                correctIds: [1, 2, 3, 4, 5],
+                cards: [
                     { id: 1, text: "عين تموشنت" },
                     { id: 2, text: "تلمسان" },
                     { id: 3, text: "وهران" },
@@ -394,23 +414,23 @@
             },
             {
                 type: 'quiz',
-                title: "3. الرموز",
-                desc: "اختر الإجابة الصحيحة:",
+                title: "3. الرموز الوطنية",
+                desc: "سؤال عن الرموز:",
                 question: "ما هو الرمز الذي رفعه المتظاهرون بفخر؟",
+                correctAnswer: 'B',
                 options: [
                     { id: 'A', text: "الشعار الوطني" },
                     { id: 'B', text: "العلم الجزائري" },
                     { id: 'C', text: "صور القادة" }
-                ],
-                correctAnswer: 'B'
+                ]
             },
             {
                 type: 'sequence',
-                title: "4. النتائج",
+                title: "4. النتائج والآثار",
                 desc: "رتب النتائج المحققة:",
                 slots: ["سياسياً", "عسكرياً", "دبلوماسياً", "استراتيجياً", "الخلاصة"],
-                correctSequence: [1, 2, 3, 4, 5],
-                items: [
+                correctIds: [1, 2, 3, 4, 5],
+                cards: [
                     { id: 1, text: "سقوط خرافة 'الجزائر فرنسية'" },
                     { id: 2, text: "تخفيف الضغط العسكري" },
                     { id: 3, text: "اعتراف الأمم المتحدة" },
@@ -420,171 +440,193 @@
             }
         ];
 
-        let currentLevel = 0;
-        let attempts = 2;
-        let currentStep = 0;
+        /**
+         * منطق اللعبة (Game Engine)
+         */
+        const App = {
+            state: {
+                level: 0,
+                attempts: 2,
+                step: 0
+            },
 
-        function startGame() {
-            document.getElementById('start-screen').classList.remove('active');
-            document.getElementById('game-ui').style.display = 'flex';
-            loadLevel(0);
-        }
+            start() {
+                document.getElementById('screen-start').classList.remove('active');
+                document.getElementById('screen-game').classList.add('active');
+                document.getElementById('screen-game').style.display = 'flex';
+                this.loadLevel(0);
+            },
 
-        function loadLevel(idx) {
-            currentLevel = idx;
-            attempts = 2;
-            currentStep = 0;
-            updateUI();
+            loadLevel(idx) {
+                this.state.level = idx;
+                this.state.attempts = 2;
+                this.state.step = 0;
+                this.updateUI();
 
-            const levelData = levels[idx];
-            const slotsWrapper = document.getElementById('slots-wrapper');
-            const cardsGrid = document.getElementById('cards-grid');
+                const data = GameData[idx];
+                const timeline = document.getElementById('timeline-container');
+                const dock = document.getElementById('cards-container');
 
-            slotsWrapper.innerHTML = "";
-            cardsGrid.innerHTML = "";
+                timeline.innerHTML = '';
+                dock.innerHTML = '';
 
-            if(levelData.type === 'sequence') {
-                setupSequenceLevel(levelData, slotsWrapper, cardsGrid);
-                document.getElementById('dock-title').innerText = "اختر البطاقة للخانة النشطة:";
-            } else {
-                setupQuizLevel(levelData, slotsWrapper, cardsGrid);
-                document.getElementById('dock-title').innerText = "اختر الإجابة الصحيحة:";
-            }
-            updateTrainPosition();
-        }
-
-        function setupSequenceLevel(data, timeline, dock) {
-            data.slots.forEach((label, i) => {
-                const isActive = (i === 0);
-                const slot = document.createElement('div');
-                slot.className = `slot ${isActive ? 'active-slot' : ''}`;
-                slot.id = `slot-${i}`;
-                slot.innerHTML = `
-                    <div class="slot-time">${label}</div>
-                    <div class="slot-answer">؟</div>
-                `;
-                timeline.appendChild(slot);
-            });
-
-            let items = [...data.items].sort(() => Math.random() - 0.5);
-            items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerText = item.text;
-                card.onclick = () => handleCardClick(item, card);
-                dock.appendChild(card);
-            });
-        }
-
-        function setupQuizLevel(data, timeline, dock) {
-            const qBox = document.createElement('div');
-            qBox.className = 'slot active-slot';
-            qBox.style.flexDirection = 'column';
-            qBox.style.padding = '20px';
-            qBox.innerHTML = `<h3 style="margin:0; color:var(--dz-green)">${data.question}</h3>`;
-            timeline.appendChild(qBox);
-
-            data.options.forEach(opt => {
-                const btn = document.createElement('div');
-                btn.className = 'card quiz-option';
-                btn.style.width = '100%';
-                btn.innerText = opt.text;
-                btn.onclick = () => handleQuizClick(opt.id);
-                dock.appendChild(btn);
-            });
-            dock.style.gridTemplateColumns = '1fr'; 
-        }
-
-        function handleCardClick(item, cardElem) {
-            const levelData = levels[currentLevel];
-            const correctId = levelData.correctSequence[currentStep];
-
-            if(item.id === correctId) {
-                showPopup("أحسنت! ✅");
-                const slot = document.getElementById(`slot-${currentStep}`);
-                slot.querySelector('.slot-answer').innerText = item.text;
-                slot.classList.remove('active-slot');
-                slot.classList.add('filled');
+                // التعامل مع نوع المرحلة (ترتيب أو سؤال)
+                if (data.type === 'sequence') {
+                    this.buildSequenceLevel(data, timeline, dock);
+                    document.getElementById('dock-hint').innerText = "اختر البطاقة للخانة النشطة:";
+                    dock.style.gridTemplateColumns = ""; // إعادة Grid الافتراضي
+                } else {
+                    this.buildQuizLevel(data, timeline, dock);
+                    document.getElementById('dock-hint').innerText = "اختر الإجابة الصحيحة:";
+                    dock.style.gridTemplateColumns = "1fr"; // عمود واحد للخيارات
+                }
                 
-                cardElem.style.opacity = '0';
-                cardElem.style.pointerEvents = 'none';
+                this.animateTrain();
+            },
 
-                currentStep++;
-                if(currentStep >= levelData.slots.length) {
-                    setTimeout(nextLevel, 1000);
+            buildSequenceLevel(data, timeline, dock) {
+                // بناء الخانات
+                data.slots.forEach((label, i) => {
+                    const isActive = (i === 0);
+                    const slot = document.createElement('div');
+                    slot.className = `slot-item ${isActive ? 'active' : ''}`;
+                    slot.id = `slot-${i}`;
+                    slot.innerHTML = `
+                        <div class="slot-label">${label}</div>
+                        <div class="slot-value">؟</div>
+                    `;
+                    timeline.appendChild(slot);
+                });
+
+                // بناء البطاقات (مخلوطة)
+                let items = [...data.cards].sort(() => Math.random() - 0.5);
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.innerText = item.text;
+                    card.onclick = () => this.handleSequenceInput(item, card);
+                    dock.appendChild(card);
+                });
+            },
+
+            buildQuizLevel(data, timeline, dock) {
+                // عرض السؤال
+                const qBox = document.createElement('div');
+                qBox.className = 'slot-item active';
+                qBox.style.padding = '20px';
+                qBox.style.flexDirection = 'column';
+                qBox.innerHTML = `<h3 style="margin:0; color:var(--primary-color)">${data.question}</h3>`;
+                timeline.appendChild(qBox);
+
+                // عرض الخيارات
+                data.options.forEach(opt => {
+                    const btn = document.createElement('div');
+                    btn.className = 'game-card';
+                    btn.innerText = opt.text;
+                    btn.style.fontSize = '1.1rem';
+                    btn.onclick = () => this.handleQuizInput(opt.id);
+                    dock.appendChild(btn);
+                });
+            },
+
+            handleSequenceInput(item, cardElem) {
+                const data = GameData[this.state.level];
+                const correctId = data.correctIds[this.state.step];
+
+                if (item.id === correctId) {
+                    this.showToast("أحسنت! ✅");
+                    
+                    // تحديث الخانة
+                    const slot = document.getElementById(`slot-${this.state.step}`);
+                    slot.querySelector('.slot-value').innerText = item.text;
+                    slot.classList.remove('active');
+                    slot.classList.add('filled');
+                    
+                    // إخفاء البطاقة
+                    cardElem.style.opacity = '0';
+                    cardElem.style.pointerEvents = 'none';
+
+                    this.state.step++;
+
+                    if (this.state.step >= data.slots.length) {
+                        setTimeout(() => this.nextLevel(), 1000);
+                    } else {
+                        // تفعيل التالي
+                        const nextSlot = document.getElementById(`slot-${this.state.step}`);
+                        nextSlot.classList.add('active');
+                        nextSlot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 } else {
-                    const nextSlot = document.getElementById(`slot-${currentStep}`);
-                    nextSlot.classList.add('active-slot');
-                    nextSlot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    this.handleError();
                 }
-            } else {
-                handleError();
-            }
-        }
+            },
 
-        function handleQuizClick(selectedId) {
-            const levelData = levels[currentLevel];
-            if(selectedId === levelData.correctAnswer) {
-                showPopup("إجابة صحيحة! ✅");
-                setTimeout(nextLevel, 1000);
-            } else {
-                handleError();
-            }
-        }
-
-        function handleError() {
-            attempts--;
-            updateUI();
-            showPopup("خطأ! حاول مجدداً ❌");
-            if(attempts <= 0) {
-                setTimeout(() => {
-                    document.getElementById('game-ui').style.display = 'none';
-                    document.getElementById('lose-screen').classList.add('active');
-                }, 800);
-            }
-        }
-
-        function nextLevel() {
-            if(currentLevel < 3) {
-                loadLevel(currentLevel + 1);
-            } else {
-                document.getElementById('train-icon').style.right = "92%";
-                setTimeout(() => {
-                    document.getElementById('game-ui').style.display = 'none';
-                    document.getElementById('win-screen').classList.add('active');
-                }, 1000);
-            }
-        }
-
-        function updateUI() {
-            document.getElementById('level-title').innerText = levels[currentLevel].title;
-            document.getElementById('level-desc').innerText = levels[currentLevel].desc;
-            document.getElementById('attempts-display').innerText = "المحاولات: " + attempts;
-            document.getElementById('cards-grid').style.gridTemplateColumns = (window.innerWidth >= 768) ? '1fr' : 'repeat(2, 1fr)';
-        }
-
-        function updateTrainPosition() {
-            let pos = currentLevel * 30;
-            document.getElementById('train-icon').style.right = pos + "%";
-            
-            for(let i=1; i<=4; i++) {
-                const dot = document.getElementById(`st-${i}`);
-                if(i <= currentLevel + 1) dot.classList.add('passed');
-                if(i === currentLevel + 1) {
-                    dot.classList.add('active');
-                    dot.classList.remove('passed');
+            handleQuizInput(selectedId) {
+                const data = GameData[this.state.level];
+                if (selectedId === data.correctAnswer) {
+                    this.showToast("إجابة صحيحة! ✅");
+                    setTimeout(() => this.nextLevel(), 1000);
                 } else {
-                    dot.classList.remove('active');
+                    this.handleError();
                 }
-            }
-        }
+            },
 
-        function showPopup(msg) {
-            const el = document.getElementById('feedback-msg');
-            el.innerText = msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 1000);
-        }
+            handleError() {
+                this.state.attempts--;
+                this.updateUI();
+                this.showToast("خطأ! حاول مجدداً ❌");
+
+                if (this.state.attempts <= 0) {
+                    setTimeout(() => {
+                        document.getElementById('screen-game').classList.remove('active');
+                        document.getElementById('screen-lose').classList.add('active');
+                    }, 800);
+                }
+            },
+
+            nextLevel() {
+                if (this.state.level < 3) {
+                    this.loadLevel(this.state.level + 1);
+                } else {
+                    document.getElementById('train-mover').style.right = "92%";
+                    setTimeout(() => {
+                        document.getElementById('screen-game').classList.remove('active');
+                        document.getElementById('screen-win').classList.add('active');
+                    }, 1000);
+                }
+            },
+
+            animateTrain() {
+                // تحريك القطار: 0%, 30%, 60%, 90%
+                let pos = this.state.level * 30;
+                document.getElementById('train-mover').style.right = pos + "%";
+
+                // تحديث العقد (Nodes)
+                for (let i = 1; i <= 4; i++) {
+                    const node = document.getElementById(`node-${i}`);
+                    if (i <= this.state.level + 1) node.classList.add('passed');
+                    if (i === this.state.level + 1) {
+                        node.classList.add('active');
+                        node.classList.remove('passed');
+                    } else {
+                        node.classList.remove('active');
+                    }
+                }
+            },
+
+            updateUI() {
+                document.getElementById('lvl-title').innerText = GameData[this.state.level].title;
+                document.getElementById('lvl-desc').innerText = GameData[this.state.level].desc;
+                document.getElementById('stats-attempts').innerText = "المحاولات: " + this.state.attempts;
+            },
+
+            showToast(msg) {
+                const toast = document.getElementById('toast');
+                toast.innerText = msg;
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 1000);
+            }
+        };
     </script>
 </body>
 </html>

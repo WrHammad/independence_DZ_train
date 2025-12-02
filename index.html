@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قطار الاستقلال - نسخة الهاتف المحسنة</title>
+    <title>قطار الاستقلال</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap');
 
         :root {
             --primary: #006633;
             --secondary: #D21034;
-            --bg: #f5f5f5;
+            --bg: #f4f4f9;
             --white: #ffffff;
             --text: #333;
         }
@@ -23,152 +23,167 @@
             color: var(--text);
             margin: 0;
             padding: 0;
-            /* استخدام dvh لضمان ملء الشاشة بشكل صحيح في الموبايل */
             height: 100vh;
-            height: 100dvh; 
+            height: 100dvh; /* مهم جداً للموبايل */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* منع تمرير الصفحة بالكامل */
+            overflow: hidden; /* يمنع حركة الصفحة بالكامل */
         }
 
-        /* 1. الرأس (ثابت) */
+        /* 1. الرأس (مضغوط جداً) */
         header {
             background: var(--white);
-            padding: 8px 15px;
-            border-bottom: 3px solid var(--secondary);
+            padding: 5px 15px;
+            border-bottom: 2px solid var(--secondary);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0; /* منع التقلص */
+            flex-shrink: 0;
+            height: 50px;
             z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         h1 { margin: 0; font-size: 1rem; color: var(--text); }
-        .attempts { font-weight: bold; color: var(--secondary); font-size: 0.9rem; background: #fff0f0; padding: 2px 10px; border-radius: 10px; }
+        
+        /* تصميم مصغر للمحاولات */
+        .attempts-mini { 
+            font-size: 0.75rem; 
+            color: #555; 
+            background: #eee; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .attempts-count { color: var(--secondary); font-size: 0.9rem; }
 
         /* 2. شريط القطار (ثابت) */
         .train-area {
             background: #e9ecef;
-            padding: 15px 0;
-            flex-shrink: 0; /* منع التقلص */
+            padding: 10px 0;
+            flex-shrink: 0;
             position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .track {
-            width: 85%; margin: 0 auto; height: 5px; background: #bbb;
+            width: 85%; margin: 0 auto; height: 4px; background: #bbb;
             display: flex; justify-content: space-between; align-items: center;
             flex-direction: row-reverse; position: relative; border-radius: 5px;
         }
         
         .dot {
-            width: 24px; height: 24px; background: #999; border-radius: 50%;
-            display: grid; place-items: center; color: white; font-size: 0.75rem;
+            width: 20px; height: 20px; background: #999; border-radius: 50%;
+            display: grid; place-items: center; color: white; font-size: 0.7rem;
             z-index: 2; border: 2px solid #e9ecef; transition: 0.3s;
         }
         .dot.active { background: var(--primary); transform: scale(1.3); }
         .dot.passed { background: var(--primary); opacity: 0.6; }
 
         #train {
-            position: absolute; top: -14px; right: 0; font-size: 1.8rem;
+            position: absolute; top: -12px; right: 0; font-size: 1.6rem;
             transform: translateX(50%); transition: right 1s; z-index: 5;
         }
 
-        /* 3. منطقة المحتوى الرئيسية (مرنة) */
-        .main-content {
-            flex-grow: 1; /* تأخذ المساحة المتبقية */
+        /* 3. حاوية اللعبة (تتكيف مع الشاشة) */
+        .game-wrapper {
+            flex-grow: 1; /* يأخذ كل المساحة المتبقية */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* تحصر التمرير هنا */
+            overflow: hidden; /* يحصر التمرير داخلياً */
             position: relative;
         }
 
-        /* الجدول الزمني (قابل للتمرير) */
-        .timeline-scroll {
+        /* 3-أ. منطقة الجدول الزمني (هنا يحدث التمرير) */
+        .timeline-scroll-area {
             flex-grow: 1;
-            overflow-y: auto; /* التمرير هنا فقط */
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            overflow-y: auto; /* التمرير العمودي مسموح هنا فقط */
+            padding: 10px;
             padding-bottom: 20px;
+            background: var(--bg);
         }
 
         .level-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 5px; background: white; padding: 8px; border-radius: 8px;
+            margin-bottom: 8px; background: white; padding: 8px 12px; border-radius: 8px;
+            position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         /* تصميم الخانات */
         .slot {
             display: flex; background: white; border: 1px solid #ccc;
-            border-radius: 8px; min-height: 60px; opacity: 0.5; filter: grayscale(1);
-            transition: 0.3s;
+            border-radius: 8px; min-height: 55px; opacity: 0.6; filter: grayscale(1);
+            transition: 0.3s; margin-bottom: 8px;
         }
         .slot.active {
             opacity: 1; filter: grayscale(0); border: 2px solid var(--primary);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); transform: scale(1.01);
+            background: #fff;
         }
         .slot.filled { opacity: 1; filter: grayscale(0); background: #e8f5e9; border-color: var(--primary); }
 
         .slot-time {
-            width: 80px; background: #f8f9fa; border-left: 1px solid #ddd;
-            display: grid; place-items: center; font-size: 0.75rem; font-weight: bold; color: var(--secondary);
+            width: 75px; background: #f8f9fa; border-left: 1px solid #ddd;
+            display: grid; place-items: center; font-size: 0.7rem; font-weight: bold; color: var(--secondary);
             text-align: center; padding: 5px;
         }
-        .slot-ans { flex-grow: 1; display: grid; place-items: center; padding: 5px; font-size: 0.85rem; text-align: center; }
+        .slot-ans { flex-grow: 1; display: grid; place-items: center; padding: 5px; font-size: 0.8rem; text-align: center; line-height: 1.2; }
 
-        /* 4. مخزن البطاقات (ثابت في الأسفل عبر Flexbox) */
-        .cards-dock {
+        /* 3-ب. منطقة البطاقات (ثابتة في الأسفل) */
+        .cards-fixed-bottom {
             background: white;
             border-top: 2px solid var(--primary);
-            padding: 10px;
-            flex-shrink: 0; /* منع التقلص */
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            padding: 8px;
+            flex-shrink: 0; /* ممنوع التقلص */
             z-index: 20;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
         }
 
-        .dock-title { font-size: 0.8rem; color: #666; margin-bottom: 8px; text-align: center; }
+        .dock-title { font-size: 0.75rem; color: #666; margin-bottom: 5px; text-align: center; }
 
         .cards-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* بطاقتان في الصف */
+            gap: 6px;
         }
 
         .card {
-            background: #f4f4f4; border: 1px solid #ddd; padding: 10px;
-            border-radius: 6px; text-align: center; font-size: 0.8rem;
-            min-height: 50px; display: grid; place-items: center;
-            cursor: pointer; user-select: none;
+            background: #f4f4f4; border: 1px solid #ddd; padding: 8px;
+            border-radius: 6px; text-align: center; font-size: 0.75rem;
+            min-height: 45px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; user-select: none; transition: 0.1s;
         }
-        .card:active { background: #e0e0e0; transform: scale(0.98); }
+        .card:active { background: #dcedc8; transform: scale(0.96); border-color: var(--primary); }
 
-        /* Media Query للكمبيوتر (تغيير الاتجاه لجنب بجنب) */
+        /* تعديلات للكمبيوتر */
         @media (min-width: 768px) {
-            .main-content { flex-direction: row; }
-            .timeline-scroll { width: 60%; border-left: 1px solid #ddd; }
-            .cards-dock { width: 40%; border-top: none; border-right: 2px solid var(--primary); overflow-y: auto; }
+            .game-wrapper { flex-direction: row; }
+            .timeline-scroll-area { width: 65%; border-left: 1px solid #ddd; }
+            .cards-fixed-bottom { width: 35%; border-top: none; border-right: 2px solid var(--primary); }
             .cards-grid { grid-template-columns: 1fr; }
-            .card { padding: 15px; font-size: 0.95rem; }
+            .card { padding: 15px; font-size: 0.9rem; margin-bottom: 5px; }
         }
 
         /* الشاشات المنبثقة */
-        .screen-overlay {
+        .overlay {
             position: fixed; inset: 0; background: white; z-index: 100;
             display: none; flex-direction: column; justify-content: center; align-items: center;
             text-align: center; padding: 20px;
         }
-        .screen-overlay.active { display: flex; }
+        .overlay.active { display: flex; }
         
         .btn {
             background: var(--primary); color: white; border: none; padding: 10px 30px;
-            border-radius: 25px; font-size: 1.1rem; margin-top: 20px; cursor: pointer;
+            border-radius: 25px; font-size: 1rem; margin-top: 20px; cursor: pointer;
             box-shadow: 0 4px 0 #004d26;
         }
         .btn:active { transform: translateY(4px); box-shadow: none; }
 
         .toast {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8); color: white; padding: 10px 20px;
-            border-radius: 20px; display: none; z-index: 200;
+            background: rgba(0,0,0,0.85); color: white; padding: 10px 20px;
+            border-radius: 20px; display: none; z-index: 200; font-size: 0.9rem;
         }
 
     </style>
@@ -177,20 +192,20 @@
 
     <div id="toast" class="toast"></div>
 
-    <div id="start-screen" class="screen-overlay active">
+    <div id="start-screen" class="overlay active">
         <h1 style="color:var(--primary); font-size:1.8rem;">🚂 قطار الاستقلال</h1>
-        <p style="color:#555; margin: 20px 0;">رتب الأحداث التاريخية في الخانات الصحيحة.<br>لديك محاولتان لكل محطة.</p>
+        <p style="color:#555; margin: 20px 0;">رتب الأحداث التاريخية لإيصال القطار.<br>لديك محاولتان لكل محطة.</p>
         <button class="btn" onclick="Game.start()">ابدأ اللعب</button>
     </div>
 
-    <div id="game-screen" class="screen-overlay" style="background: var(--bg); display: none; justify-content: flex-start; padding: 0;">
+    <div id="game-screen" class="overlay" style="background: var(--bg); display: none; justify-content: flex-start; padding: 0;">
         
         <header>
-            <div>
-                <h1>قطار الاستقلال</h1>
-                <small style="color:#666; font-size:0.7rem;">إعداد: حماد بن عيسى</small>
+            <h1>قطار الاستقلال</h1>
+            <div class="attempts-mini">
+                <span>المحاولات:</span>
+                <span class="attempts-count" id="attempts-ui">2</span>
             </div>
-            <div class="attempts" id="attempts-ui">المحاولات: 2</div>
         </header>
 
         <div class="train-area">
@@ -203,31 +218,31 @@
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="timeline-scroll">
+        <div class="game-wrapper">
+            <div class="timeline-scroll-area">
                 <div class="level-header">
-                    <span id="lvl-title" style="color:var(--primary); font-weight:bold;">المحطة 1</span>
-                    <span id="lvl-desc" style="font-size:0.8rem; color:#666;">الوصف</span>
+                    <span id="lvl-title" style="color:var(--primary); font-weight:bold; font-size: 0.9rem;">المحطة 1</span>
+                    <span id="lvl-desc" style="font-size:0.75rem; color:#666;">الوصف</span>
                 </div>
-                <div id="slots-container" style="display:flex; flex-direction:column; gap:10px;"></div>
+                <div id="slots-container"></div>
             </div>
 
-            <div class="cards-dock">
-                <div class="dock-title" id="dock-hint">انقر على البطاقة المناسبة:</div>
+            <div class="cards-fixed-bottom">
+                <div class="dock-title" id="dock-hint">اختر البطاقة:</div>
                 <div id="cards-container" class="cards-grid"></div>
             </div>
         </div>
 
     </div>
 
-    <div id="win-screen" class="screen-overlay">
+    <div id="win-screen" class="overlay">
         <h1 style="font-size:4rem;">🇩🇿</h1>
         <h1 style="color:var(--primary);">مبروك!</h1>
         <h2>"تحيا الجزائر حرة مستقلة"</h2>
         <button class="btn" onclick="location.reload()">لعبة جديدة</button>
     </div>
 
-    <div id="lose-screen" class="screen-overlay">
+    <div id="lose-screen" class="overlay">
         <h1 style="font-size:4rem;">⛔</h1>
         <h1>توقف القطار</h1>
         <button class="btn" style="background:var(--secondary);" onclick="location.reload()">حاول مجدداً</button>
@@ -277,7 +292,7 @@
                 document.getElementById('start-screen').classList.remove('active');
                 const gameUI = document.getElementById('game-screen');
                 gameUI.classList.add('active');
-                gameUI.style.display = 'flex'; // مهم جداً للفليكس
+                gameUI.style.display = 'flex'; 
                 this.load(0);
             },
 
@@ -291,14 +306,14 @@
                 const data = Levels[this.lvl];
                 document.getElementById('lvl-title').innerText = data.title;
                 document.getElementById('lvl-desc').innerText = data.desc;
-                document.getElementById('attempts-ui').innerText = "المحاولات: " + this.tries;
+                document.getElementById('attempts-ui').innerText = this.tries;
 
                 const tLine = document.getElementById('slots-container');
                 const dock = document.getElementById('cards-container');
                 tLine.innerHTML = ''; dock.innerHTML = '';
 
                 if(data.type === 'seq') {
-                    // بناء الخانات
+                    // الخانات
                     data.slots.forEach((s, i) => {
                         tLine.innerHTML += `
                         <div class="slot ${i===0?'active':''}" id="s-${i}">
@@ -306,7 +321,7 @@
                             <div class="slot-ans">؟</div>
                         </div>`;
                     });
-                    // بناء البطاقات
+                    // البطاقات
                     let arr = [...data.items].sort(()=>Math.random()-0.5);
                     arr.forEach(item => {
                         let div = document.createElement('div');
@@ -316,13 +331,13 @@
                     });
                     document.getElementById('cards-container').style.gridTemplateColumns = "1fr 1fr";
                 } else {
-                    // كويز
-                    tLine.innerHTML = `<div class="slot active" style="padding:15px; flex-direction:column;">
-                        <h3 style="margin:0; color:var(--primary)">${data.q}</h3>
+                    // الكويز
+                    tLine.innerHTML = `<div class="slot active" style="padding:15px; flex-direction:column; height:auto;">
+                        <h3 style="margin:0; color:var(--primary); font-size:1rem;">${data.q}</h3>
                     </div>`;
                     data.opts.forEach(o => {
                         let div = document.createElement('div');
-                        div.className = 'card'; div.innerText = o.txt; div.style.fontSize="1.1rem";
+                        div.className = 'card'; div.innerText = o.txt; div.style.fontSize="1rem";
                         div.onclick = () => this.checkQuiz(o.id);
                         dock.appendChild(div);
                     });
@@ -337,11 +352,11 @@
                     const slot = document.getElementById(`s-${this.step}`);
                     slot.querySelector('.slot-ans').innerText = item.txt;
                     slot.classList.remove('active'); slot.classList.add('filled');
-                    el.style.display = 'none';
+                    el.style.display = 'none'; // إخفاء البطاقة المستخدمة
                     
                     this.step++;
                     if(this.step >= Levels[this.lvl].slots.length) {
-                        setTimeout(()=>this.next(), 1000);
+                        setTimeout(()=>this.next(), 800);
                     } else {
                         const next = document.getElementById(`s-${this.step}`);
                         next.classList.add('active');
@@ -355,7 +370,7 @@
             checkQuiz(id) {
                 if(id === Levels[this.lvl].ans) {
                     this.toast("صحيح ✅");
-                    setTimeout(()=>this.next(), 1000);
+                    setTimeout(()=>this.next(), 800);
                 } else {
                     this.fail();
                 }
@@ -363,7 +378,7 @@
 
             fail() {
                 this.tries--;
-                document.getElementById('attempts-ui').innerText = "المحاولات: " + this.tries;
+                document.getElementById('attempts-ui').innerText = this.tries;
                 this.toast("خطأ ❌");
                 if(this.tries <= 0) {
                     setTimeout(()=>{
@@ -398,7 +413,7 @@
             toast(msg) {
                 let t = document.getElementById('toast');
                 t.innerText = msg; t.style.display = 'block';
-                setTimeout(()=>t.style.display='none', 1000);
+                setTimeout(()=>t.style.display='none', 800);
             }
         };
     </script>

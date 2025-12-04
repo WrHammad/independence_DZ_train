@@ -328,24 +328,25 @@
             z-index: 100;
             display: none;
             justify-content: center; align-items: center;
-            padding: 20px;
+            padding: 15px; /* تقليص الهوامش الخارجية */
         }
         .overlay.active { display: flex; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
 
         .modal {
-            background: white; width: 100%; max-width: 480px;
-            border-radius: 24px; padding: 40px 30px;
+            background: white; width: 100%; max-width: 450px;
+            border-radius: 20px; padding: 25px 20px; /* تقليص الحشو الداخلي */
             text-align: center; position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-top: 8px solid var(--secondary);
+            border-top: 6px solid var(--secondary);
+            overflow-y: auto; max-height: 90vh; /* للحماية في الشاشات الصغيرة جداً */
         }
 
         .btn-start {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; border: none; padding: 18px 40px;
-            border-radius: 50px; font-size: 1.1rem; font-weight: 800;
-            cursor: pointer; margin-top: 25px; width: 100%;
+            color: white; border: none; padding: 15px 40px;
+            border-radius: 50px; font-size: 1.05rem; font-weight: 800;
+            cursor: pointer; margin-top: 20px; width: 100%;
             box-shadow: 0 10px 20px -5px rgba(0, 102, 51, 0.4);
             transition: transform 0.2s, box-shadow 0.2s;
         }
@@ -371,15 +372,16 @@
     <!-- شاشة البداية -->
     <div id="start-screen" class="overlay active">
         <div class="modal">
-            <div style="font-size: 4.5rem; margin-bottom: 15px;">🚂</div>
-            <h1 style="color:var(--text-main); margin:0 0 10px; font-size: 2rem;">قطار الاستقلال</h1>
-            <p style="color:var(--text-muted); font-size: 1rem; margin-bottom: 25px;">
+            <!-- تقليص حجم الأيقونة والعنوان -->
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🚂</div>
+            <h1 style="color:var(--text-main); margin:0 0 8px; font-size: 1.6rem;">قطار الاستقلال</h1>
+            <p style="color:var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4;">
                 رحلة تاريخية تفاعلية عبر أحداث 11 ديسمبر 1960.
                 <br>رتب الأحداث لتصل إلى محطة الحرية!
             </p>
             
-            <div style="background:#f1f5f9; padding:20px; border-radius:16px; text-align: right;">
-                <ul style="margin:0; padding-right:20px; font-size:0.95rem; color:#475569; line-height: 1.8;">
+            <div style="background:#f1f5f9; padding:15px; border-radius:12px; text-align: right;">
+                <ul style="margin:0; padding-right:20px; font-size:0.9rem; color:#475569; line-height: 1.6;">
                     <li>🎯 <strong>الهدف:</strong> إيصال القطار للمحطة الأخيرة.</li>
                     <li>❤ <strong>الفرص:</strong> لديك محاولتان فقط لكل مرحلة.</li>
                     <li>🧠 <strong>التحدي:</strong> رتب الأحداث وأجب بذكاء.</li>
@@ -453,9 +455,9 @@
     <!-- شاشة الفوز -->
     <div id="win-screen" class="overlay">
         <div class="modal" style="border-top-color: var(--primary);">
-            <div style="font-size:4.5rem; margin-bottom:15px;">🇩🇿🎉</div>
-            <h2 style="color:var(--primary); font-size: 1.8rem;">وصل القطار بسلام!</h2>
-            <p style="color:#64748b; font-size: 1.1rem; margin-bottom: 25px;">
+            <div style="font-size:4rem; margin-bottom:15px;">🇩🇿🎉</div>
+            <h2 style="color:var(--primary); font-size: 1.6rem; margin: 0 0 10px;">وصل القطار بسلام!</h2>
+            <p style="color:#64748b; font-size: 1rem; margin-bottom: 20px;">
                 مبروك! لقد أتممت رحلة الاستقلال بنجاح وأثبتت معرفتك بتاريخ بلادك.
             </p>
             <button class="btn-start" onclick="location.reload()">لعب مجدداً ↺</button>
@@ -465,9 +467,9 @@
     <!-- شاشة الخسارة -->
     <div id="lose-screen" class="overlay">
         <div class="modal">
-            <div style="font-size:4.5rem; margin-bottom:15px; filter:grayscale(1);">🚂</div>
-            <h2 style="color:var(--secondary); font-size: 1.8rem;">توقف القطار!</h2>
-            <p style="color:#64748b; font-size: 1.1rem; margin-bottom: 25px;">
+            <div style="font-size:4rem; margin-bottom:15px; filter:grayscale(1);">🚂</div>
+            <h2 style="color:var(--secondary); font-size: 1.6rem; margin: 0 0 10px;">توقف القطار!</h2>
+            <p style="color:#64748b; font-size: 1rem; margin-bottom: 20px;">
                 للأسف نفذت المحاولات. راجع معلوماتك التاريخية وحاول مرة أخرى.
             </p>
             <button class="btn-start" style="background:#475569;" onclick="location.reload()">إعادة المحاولة ↺</button>

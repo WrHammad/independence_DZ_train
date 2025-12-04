@@ -2,27 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>قطار الاستقلال | 11 ديسمبر 1960</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>قطار الاستقلال | الرحلة الكاملة</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;900&display=swap');
 
         :root {
-            /* لوحة الألوان الوطنية المحسنة */
             --primary: #006633;
             --primary-dark: #004d26;
-            --primary-light: #e6f2eb;
             --secondary: #D21034;
-            --secondary-light: #fff0f2;
-            --accent: #f59e0b; /* برتقالي ذهبي للتمييز */
-            
+            --accent: #f59e0b;
             --bg-body: #f8fafc;
             --surface: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            
-            --track-bg: #cbd5e1;
-            --station-size: 55px; /* تكبير حجم المحطات */
+            --header-h: 60px;
+            --train-h: 120px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
@@ -37,480 +32,483 @@
             overflow: hidden;
         }
 
-        /* --- 1. الرأس (Header) --- */
+        /* --- الرأس --- */
         header {
+            height: var(--header-h);
             background: var(--surface);
-            padding: 10px 20px;
+            padding: 0 20px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            z-index: 20;
-            border-bottom: 3px solid var(--secondary);
-            flex-shrink: 0;
+            border-bottom: 2px solid #e2e8f0;
+            flex-shrink: 0; z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         
-        .header-title h1 { margin: 0; font-size: 1.1rem; color: var(--primary); font-weight: 900; }
-        .header-title small { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
-
-        .lives-box {
-            background: var(--secondary-light); color: var(--secondary);
-            padding: 6px 16px; border-radius: 50px;
-            font-weight: 800; font-size: 1rem;
-            display: flex; align-items: center; gap: 8px;
-            border: 2px solid rgba(210, 16, 52, 0.15);
-            box-shadow: 0 2px 5px rgba(210, 16, 52, 0.1);
+        .header-title { font-size: 1rem; color: var(--primary); font-weight: 900; display:flex; flex-direction:column; line-height:1.1;}
+        .header-title small { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        
+        .lives-badge {
+            background: #fff1f2; color: var(--secondary);
+            padding: 4px 12px; border-radius: 20px;
+            font-weight: 800; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 6px;
+            border: 1px solid #fecdd3;
+            box-shadow: 0 2px 4px rgba(210, 16, 52, 0.1);
         }
 
-        /* --- 2. منطقة القطار المحسنة (Train Section) --- */
+        /* --- شريط القطار (محدث لـ 8 محطات) --- */
         .train-container {
+            height: var(--train-h);
             background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 100%);
-            padding: 45px 20px 25px;
             position: relative;
             flex-shrink: 0;
+            display: flex; align-items: center; justify-content: flex-start; /* محاذاة لليسار للتمرير */
             border-bottom: 1px solid #bfdbfe;
-            box-shadow: inset 0 -10px 20px -10px rgba(0,0,0,0.05);
-        }
-
-        /* سكة الحديد - أكثر وضوحاً */
-        .rail-track {
-            position: relative;
-            height: 18px;
-            background: var(--track-bg);
-            border-radius: 10px;
-            width: 92%; margin: 0 auto;
-            display: flex; align-items: center; justify-content: space-between;
-            flex-direction: row-reverse; /* 1 on right, 4 on left */
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.15);
-            border: 1px solid #94a3b8;
-        }
-        
-        /* عوارض السكة */
-        .rail-track::before {
-            content: ''; position: absolute; inset: 0;
-            background-image: repeating-linear-gradient(90deg, transparent, transparent 12px, rgba(255,255,255,0.6) 12px, rgba(255,255,255,0.6) 16px);
-            border-radius: 10px; z-index: 1;
-        }
-
-        /* شريط التقدم */
-        .track-progress {
-            position: absolute; right: 0; top: 0; bottom: 0;
-            width: 0%; 
-            background: linear-gradient(90deg, var(--primary), #22c55e);
-            border-radius: 10px; z-index: 2;
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
-        }
-
-        /* المحطات - تصميم جديد */
-        .station {
-            width: var(--station-size); height: var(--station-size);
-            background: var(--surface);
-            border: 4px solid #94a3b8;
-            border-radius: 50%;
-            z-index: 5;
-            display: grid; place-items: center;
-            font-weight: 900; font-size: 1.3rem; color: #94a3b8;
-            position: relative;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-        }
-        
-        /* تسميات المحطات (اختياري للوضوح) */
-        .station::after {
-            content: attr(data-label);
-            position: absolute; bottom: -25px;
-            font-size: 0.7rem; color: var(--text-muted); font-weight: 700;
-            white-space: nowrap; opacity: 0.8;
-        }
-
-        /* حالة المحطة النشطة */
-        .station.active {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            transform: scale(1.25);
-            background: #fff;
-            box-shadow: 0 0 0 6px rgba(210, 16, 52, 0.15), 0 10px 20px rgba(0,0,0,0.15);
-            animation: pulse-ring 2s infinite;
-        }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0px rgba(210, 16, 52, 0.3); }
-            70% { box-shadow: 0 0 0 12px rgba(210, 16, 52, 0); }
-            100% { box-shadow: 0 0 0 0px rgba(210, 16, 52, 0); }
-        }
-
-        /* حالة المحطة المكتملة */
-        .station.passed {
-            background: var(--primary);
-            border-color: var(--primary-dark);
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 102, 51, 0.3);
-        }
-        .station.passed::after { color: var(--primary); }
-
-        /* أيقونة القطار */
-        #train-icon {
-            position: absolute;
-            top: -55px; /* رفع القطار ليكون أوضح */
-            right: 0;
-            font-size: 4rem;
-            z-index: 10;
-            transform: translateX(50%);
-            transition: right 1s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(2px 8px 4px rgba(0,0,0,0.2));
-            pointer-events: none;
-        }
-        /* دخان القطار */
-        #train-icon::after {
-            content: '💨'; position: absolute; font-size: 1.8rem; top: 15px; right: -15px;
-            opacity: 0; animation: smoke 2s infinite;
-        }
-        @keyframes smoke { 0% { opacity:0; transform:translate(0,0) scale(0.5); } 50% { opacity:0.7; } 100% { opacity:0; transform:translate(-25px,-25px) scale(1.5); } }
-
-        /* --- 3. تخطيط اللعب المرن (Main Layout) --- */
-        .main-layout {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            background: #f1f5f9;
-        }
-
-        /* منطقة التايم لاين والأسئلة */
-        .timeline-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
+            overflow-x: auto;
+            padding: 0 20px 15px;
             scroll-behavior: smooth;
         }
 
-        .quest-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-            border-right: 5px solid var(--primary);
-            animation: slideDown 0.4s ease-out;
-        }
-        @keyframes slideDown { from {opacity:0; transform:translateY(-10px);} to {opacity:1; transform:translateY(0);} }
+        /* إخفاء شريط التمرير */
+        .train-container::-webkit-scrollbar { display: none; }
 
-        .quest-header { display:flex; justify-content:space-between; margin-bottom:10px; align-items:center; }
-        .tag { background: var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.8rem; font-weight:700; }
+        .rail-track {
+            position: relative; 
+            min-width: 600px; /* عرض كافٍ لـ 8 محطات */
+            height: 12px;
+            background: #cbd5e1; border-radius: 6px;
+            display: flex; align-items: center; justify-content: space-between;
+            flex-direction: row-reverse;
+            padding: 0 10px;
+            margin: 0 auto;
+        }
+        
+        .track-progress {
+            position: absolute; right: 0; top: 0; bottom: 0; width: 0%; 
+            background: linear-gradient(90deg, var(--primary), #22c55e); 
+            border-radius: 6px; z-index: 1;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .station {
+            width: 30px; height: 30px;
+            background: var(--surface); border: 3px solid #94a3b8;
+            border-radius: 50%; z-index: 5;
+            display: grid; place-items: center;
+            font-weight: 800; font-size: 0.8rem; color: #94a3b8;
+            transition: all 0.4s; position: relative;
+            flex-shrink: 0;
+        }
+        .station::after {
+            content: attr(data-label); position: absolute; bottom: -25px;
+            font-size: 0.65rem; color: var(--text-muted); font-weight: 700;
+            white-space: nowrap; transform: scale(0.9); transition: all 0.3s;
+        }
+        .station.active {
+            border-color: var(--secondary); color: var(--secondary);
+            transform: scale(1.3); background: #fff;
+            box-shadow: 0 0 0 4px rgba(210, 16, 52, 0.15);
+        }
+        .station.active::after { color: var(--secondary); transform: scale(1); font-weight:800; }
+        
+        .station.passed {
+            background: var(--primary); border-color: var(--primary);
+            color: white; transform: scale(1);
+        }
+
+        #train-icon {
+            position: absolute; top: -45px; right: 0;
+            font-size: 2.8rem; z-index: 10;
+            transform: translateX(50%);
+            transition: right 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.2));
+        }
+
+        /* --- منطقة الأسئلة --- */
+        .game-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 20px 240px; 
+            background: var(--bg-body);
+            display: flex; flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        .level-card {
+            background: white; padding: 20px; border-radius: 20px;
+            margin-bottom: 20px; border-right: 5px solid var(--primary);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
+            animation: slideInUp 0.5s ease;
+        }
+        @keyframes slideInUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+
+        .level-card h2 { margin: 0 0 10px; font-size: 1.1rem; color: var(--primary-dark); display:flex; align-items:center; gap:8px; }
+        .level-card p { margin: 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
 
         /* الخانات (Slots) */
-        .slots-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        .slots-container { 
+            display: flex; flex-direction: column; gap: 12px;
+            width: 100%;
+        }
 
         .slot {
-            background: #f8fafc;
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            min-height: 65px;
-            display: flex; align-items: stretch;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white; border: 2px dashed #cbd5e1;
+            border-radius: 16px; min-height: 60px;
+            display: flex; align-items: center;
+            transition: all 0.3s;
             position: relative;
         }
         .slot.active {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 8px 20px -4px rgba(0, 102, 51, 0.15);
-            transform: scale(1.02);
-            border-style: solid;
-            z-index: 2;
+            border-color: var(--primary); background: #fff;
+            box-shadow: 0 8px 20px -5px rgba(0, 102, 51, 0.15);
+            border-style: solid; transform: scale(1.02); z-index: 2;
         }
         .slot.filled {
-            border-style: solid; border-color: #22c55e;
-            background: #f0fdf4;
+            border-color: #22c55e; background: #dcfce7;
+            border-style: solid; transform: scale(1);
         }
-        
+
         .slot-num {
-            width: 50px; display: grid; place-items: center;
-            background: #e2e8f0; border-radius: 0 10px 10px 0;
-            font-weight: 800; color: #64748b; font-size: 1rem;
-            border-left: 1px solid #cbd5e1;
+            width: 45px; height: 100%; min-height: 60px;
+            display: grid; place-items: center;
+            background: #f1f5f9; border-radius: 0 14px 14px 0;
+            font-weight: 800; color: #64748b; font-size: 0.9rem;
+            border-left: 1px solid #e2e8f0;
         }
         .slot-text {
-            flex: 1; display: grid; place-items: center;
-            padding: 8px 15px; text-align: center;
-            font-weight: 700; color: var(--primary); font-size: 0.95rem;
-            line-height: 1.4;
-        }
-        /* تلميح بصري للخانة النشطة */
-        .slot.active .slot-text::before {
-            content: '👇 اضغط للإجابة'; font-size: 0.75rem; color: var(--text-muted); opacity: 0.6;
-            position: absolute; top: 2px; left: 10px;
-        }
-
-        /* منطقة البطاقات (Options) */
-        .cards-area {
-            background: var(--surface);
-            padding: 15px 20px 25px; /* زيادة الحشوة السفلية للموبايل */
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-            z-index: 30;
-            flex-shrink: 0;
-            border-radius: 20px 20px 0 0;
+            flex: 1; padding: 8px 12px; text-align: center;
+            font-weight: 700; color: var(--primary-dark); font-size: 0.9rem;
+            line-height: 1.3;
         }
         
-        .area-title { text-align:center; font-size:0.85rem; color:var(--text-muted); margin-bottom:12px; font-weight:700; }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* افتراضي للموبايل */
-            gap: 12px;
+        .slot.active::after {
+            content: '👈 اختر الإجابة'; 
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            font-size: 0.7rem; color: var(--primary); opacity: 0.6;
+            animation: blink 1s infinite;
         }
+        .slot.filled::after { content: none; }
+        @keyframes blink { 50% {opacity: 0.2;} }
+
+        /* --- لوحة الخيارات (Bottom Sheet) --- */
+        .cards-sheet {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white;
+            padding: 15px 15px 25px;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.1);
+            border-radius: 24px 24px 0 0;
+            z-index: 50;
+            max-height: 40vh; overflow-y: auto;
+            border-top: 1px solid #e2e8f0;
+        }
+        .sheet-handle {
+            width: 40px; height: 5px; background: #cbd5e1;
+            border-radius: 10px; margin: 0 auto 15px;
+        }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .option-card {
-            background: var(--surface);
-            border: 1px solid #e2e8f0;
-            border-bottom: 4px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-            font-size: 0.9rem; font-weight: 700; color: var(--text-main);
-            cursor: pointer;
-            min-height: 70px;
-            display: grid; place-items: center;
-            transition: transform 0.1s, border-color 0.2s, background 0.2s;
-            user-select: none;
+            background: white; border: 1px solid #e2e8f0;
+            border-bottom: 3px solid #cbd5e1;
+            border-radius: 12px; padding: 12px 8px;
+            text-align: center; font-size: 0.85rem; font-weight: 700;
+            color: #334155; cursor: pointer;
+            min-height: 60px; display: grid; place-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            transition: transform 0.1s; user-select: none;
         }
-        .option-card:active { transform: translateY(2px); border-bottom-width: 2px; background: #f1f5f9; }
-        
-        /* تأثير عند التحويم (للكمبيوتر) */
-        @media (hover: hover) {
-            .option-card:hover {
-                transform: translateY(-3px);
-                border-bottom-color: var(--primary);
-                color: var(--primary);
-                box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            }
+        .option-card:active {
+            transform: translateY(2px); border-bottom-width: 1px;
+            background: #f1f5f9;
         }
 
-        /* --- تحسينات الشاشات الكبيرة (Desktop/Tablet) --- */
-        @media (min-width: 768px) {
-            .main-layout {
-                flex-direction: row; /* تخطيط أفقي */
-                max-width: 1400px; margin: 0 auto; width: 100%;
-            }
-            .timeline-area {
-                flex: 2; /* مساحة أكبر للأسئلة */
-                padding: 40px;
-                border-left: 1px solid #e2e8f0;
-            }
-            .cards-area {
-                flex: 1; /* مساحة جانبية للخيارات */
-                border-top: none;
-                border-radius: 0;
-                background: #f8fafc;
-                padding: 40px 20px;
-                overflow-y: auto;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.03);
-            }
-            .cards-grid {
-                grid-template-columns: 1fr; /* عمود واحد للخيارات */
-                gap: 20px;
-            }
-            .option-card {
-                padding: 25px; font-size: 1.05rem;
-                min-height: 90px;
-            }
-            
-            /* تكبير السكة والقطار */
-            .rail-track { height: 24px; width: 85%; }
-            :root { --station-size: 70px; }
-            #train-icon { font-size: 5rem; top: -65px; }
-            .station { font-size: 1.6rem; border-width: 5px; }
+        /* --- شاشات المعلومات (Fact Popup) --- */
+        .fact-overlay {
+            position: fixed; inset: 0; z-index: 150;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; padding: 20px;
         }
-
-        /* --- النوافذ المنبثقة (Start/Win/Lose) --- */
-        .overlay {
-            position: fixed; inset: 0;
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            display: none;
-            justify-content: center; align-items: center;
-            padding: 15px; /* تقليص الهوامش الخارجية */
-        }
-        .overlay.active { display: flex; animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes fadeUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-
-        .modal {
-            background: white; width: 100%; max-width: 450px;
-            border-radius: 20px; padding: 25px 20px; /* تقليص الحشو الداخلي */
+        .fact-card {
+            background: white; width: 100%; max-width: 350px;
+            border-radius: 24px; padding: 25px 20px;
             text-align: center; position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-top: 6px solid var(--secondary);
-            overflow-y: auto; max-height: 90vh; /* للحماية في الشاشات الصغيرة جداً */
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-top: 6px solid var(--accent);
         }
-
-        .btn-start {
+        @keyframes popIn { from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
+        
+        .fact-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .fact-title { color: var(--primary-dark); font-size: 1.2rem; margin: 0 0 10px; font-weight: 800; }
+        .fact-text { color: var(--text-main); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+        
+        .btn-next {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; border: none; padding: 15px 40px;
-            border-radius: 50px; font-size: 1.05rem; font-weight: 800;
-            cursor: pointer; margin-top: 20px; width: 100%;
-            box-shadow: 0 10px 20px -5px rgba(0, 102, 51, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
+            color: white; border: none;
+            padding: 12px 30px; border-radius: 50px; font-weight: 800; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 6px 15px rgba(0, 102, 51, 0.25);
+            width: 100%; transition: transform 0.2s;
         }
-        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(0, 102, 51, 0.5); }
-        .btn-start:active { transform: translateY(1px); }
+        .btn-next:active { transform: scale(0.98); }
 
-        /* Toast Message */
-        .toast {
-            position: fixed; top: 15%; left: 50%; transform: translateX(-50%) scale(0.9);
-            padding: 12px 30px; border-radius: 50px; color: white; font-weight: 700;
-            z-index: 200; display: none; box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-            font-size: 1rem; white-space: nowrap; opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        /* --- شاشات البداية والنهاية --- */
+        .overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: #ffffff;
+            display: none; flex-direction: column; 
+            justify-content: center; align-items: center;
+            padding: 30px; text-align: center;
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
+        .overlay.active { display: flex; animation: fadeIn 0.3s; }
+        
+        .start-logo {
+            width: 100px; height: 100px; background: var(--primary-light);
+            border-radius: 50%; display: grid; place-items: center;
+            font-size: 3rem; margin-bottom: 20px; color: var(--primary);
+            box-shadow: 0 10px 20px rgba(0, 102, 51, 0.15);
+        }
+        
+        .toast {
+            position: fixed; top: 20%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            background: #333; color: white; padding: 10px 25px;
+            border-radius: 30px; font-weight: 700; font-size: 0.9rem;
+            opacity: 0; pointer-events: none; z-index: 300;
+            transition: all 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+
     </style>
 </head>
 <body>
 
-    <!-- رسائل التنبيه -->
     <div id="toast" class="toast"></div>
 
-    <!-- شاشة البداية -->
+    <!-- شاشة البداية المعدلة -->
     <div id="start-screen" class="overlay active">
-        <div class="modal">
-            <!-- تقليص حجم الأيقونة والعنوان -->
-            <div style="font-size: 3.5rem; margin-bottom: 10px;">🚂</div>
-            <h1 style="color:var(--text-main); margin:0 0 8px; font-size: 1.6rem;">قطار الاستقلال</h1>
-            <p style="color:var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.4;">
-                رحلة تاريخية تفاعلية عبر أحداث 11 ديسمبر 1960.
-                <br>رتب الأحداث لتصل إلى محطة الحرية!
-            </p>
-            
-            <div style="background:#f1f5f9; padding:15px; border-radius:12px; text-align: right;">
-                <ul style="margin:0; padding-right:20px; font-size:0.9rem; color:#475569; line-height: 1.6;">
-                    <li>🎯 <strong>الهدف:</strong> إيصال القطار للمحطة الأخيرة.</li>
-                    <li>❤ <strong>الفرص:</strong> لديك محاولتان فقط لكل مرحلة.</li>
-                    <li>🧠 <strong>التحدي:</strong> رتب الأحداث وأجب بذكاء.</li>
-                </ul>
-            </div>
+        <div class="start-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="60" height="60" fill="currentColor">
+                <path d="M560 288h-49.71c.1-2.55.21-5.11.21-7.7V239.3c0-12.3-4.3-24.2-12.1-33.7L465.8 160h-30.4l32.6 45.6c4.2 5.9 6.4 12.8 6.4 20V288H245.7c.1-2.55.21-5.11.21-7.7V239.3c0-12.3-4.3-24.2-12.1-33.7L200.8 160H32c-17.7 0-32 14.3-32 32v192c0 17.7 14.3 32 32 32h576c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32h-38.3l32.6 45.6c4.2 5.9 6.4 12.8 6.4 20V288zM32 384v-96h80v96H32zm128 0v-96h80v96h-80zm128 0v-96h80v96h-80zm128 0v-96h80v96h-80zm-48-352c0 17.7-14.3 32-32 32H384c-17.7 0-32-14.3-32-32s14.3-32 32-32h32c17.7 0 32 14.3 32 32zM96 96H288c17.7 0 32-14.3 32-32s-14.3-32-32-32H96c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/>
+            </svg>
+        </div>
+        <h1 style="color:var(--primary); margin:0; font-size:1.8rem; font-weight:900;">قطار الاستقلال</h1>
+        <h3 style="color:var(--secondary); margin:5px 0 15px; font-weight:700;">مظاهرات 11 ديسمبر 1960</h3>
+        <p style="color:#64748b; font-size:0.9rem; line-height:1.6; max-width:280px; margin-bottom:25px;">
+            رحلة طويلة من <strong>8 محطات</strong> تفاعلية.<br>
+            اكتشف أسرار المظاهرات، الأبطال، والانتصار الكبير.
+        </p>
+        <button class="btn-next" onclick="Game.start()">انطلق الآن 🚩</button>
+        <div style="margin-top:20px; font-size:0.75rem; color:#94a3b8; background:#f1f5f9; padding:5px 15px; border-radius:15px;">إعداد الكاتب: حماد بن عيسى</div>
+    </div>
 
-            <button class="btn-start" onclick="Game.start()">انطلاق الرحلة 🚩</button>
+    <!-- شاشة المعلومات (بين المراحل) -->
+    <div id="fact-screen" class="fact-overlay">
+        <div class="fact-card">
+            <span class="fact-icon">💡</span>
+            <h3 class="fact-title" id="fact-title">هل تعلم؟</h3>
+            <p class="fact-text" id="fact-desc">معلومة...</p>
+            <button class="btn-next" onclick="Game.nextLvlConfirm()">المحطة التالية ⬅</button>
         </div>
     </div>
 
-    <!-- واجهة اللعبة -->
+    <!-- واجهة اللعب -->
     <div id="game-ui" style="display:none; flex-direction:column; height:100%;">
-        
         <header>
             <div class="header-title">
-                <h1>قطار الاستقلال</h1>
-                <small>ذكرى 11 ديسمبر 1960</small>
+                <span>🚂 قطار الاستقلال</span>
+                <small id="stage-name">المحطة 1</small>
             </div>
-            <div class="lives-box">
-                <span style="color: #ef4444;">❤</span> <span id="lives">2</span>
+            <div class="lives-badge">
+                <span>❤</span> <span id="lives">2</span>
             </div>
         </header>
 
-        <!-- منطقة القطار (Visual Train) -->
         <div class="train-container">
             <div class="rail-track">
                 <div class="track-progress" id="track-fill"></div>
-                
-                <!-- المحطات -->
-                <div class="station" id="st-4" data-label="النهاية">4</div>
-                <div class="station" id="st-3" data-label="">3</div>
-                <div class="station" id="st-2" data-label="">2</div>
-                <div class="station active" id="st-1" data-label="البداية">1</div>
-                
-                <!-- القطار -->
+                <!-- 8 محطات للرحلة الموسعة -->
+                <div class="station" id="st-8" data-label="النصر">8</div>
+                <div class="station" id="st-7" data-label="الرحيل">7</div>
+                <div class="station" id="st-6" data-label="العلم">6</div>
+                <div class="station" id="st-5" data-label="المرأة">5</div>
+                <div class="station" id="st-4" data-label="العاصمة">4</div>
+                <div class="station" id="st-3" data-label="وهران">3</div>
+                <div class="station" id="st-2" data-label="الشرارة">2</div>
+                <div class="station active" id="st-1" data-label="الفخ">1</div>
                 <div id="train-icon">🚂</div>
             </div>
-            
-            <!-- نص توضيحي بسيط -->
-            <div style="text-align:center; margin-top:25px; color:var(--text-muted); font-size:0.85rem; font-weight:600;">
-                المحطة الحالية: <span id="current-stage-name" style="color:var(--primary);">التسلسل الزمني</span>
-            </div>
         </div>
 
-        <div class="main-layout">
-            <!-- قسم الأسئلة (Timeline) -->
-            <div class="timeline-area">
-                <div class="quest-card">
-                    <div class="quest-header">
-                        <span id="lvl-title" style="font-weight:800; font-size:1.2rem; color:var(--primary-dark);">العنوان</span>
-                        <span class="tag">مهمة تاريخية</span>
-                    </div>
-                    <p id="lvl-desc" style="color:var(--text-muted); font-size:1rem; line-height:1.6; margin:0;">الوصف</p>
-                </div>
-                <div id="slots-container" class="slots-wrapper">
-                    <!-- يتم توليد الخانات هنا -->
-                </div>
+        <div class="game-scroll-area">
+            <div class="level-card">
+                <h2 id="lvl-title">📝 العنوان</h2>
+                <p id="lvl-desc">الوصف...</p>
             </div>
-
-            <!-- قسم الخيارات (Cards) -->
-            <div class="cards-area">
-                <div class="area-title">👇 اضغط على الإجابة الصحيحة</div>
-                <div id="cards-container" class="cards-grid">
-                    <!-- يتم توليد البطاقات هنا -->
-                </div>
-            </div>
+            <div id="slots-container" class="slots-container"></div>
         </div>
 
+        <div class="cards-sheet">
+            <div class="sheet-handle"></div>
+            <div id="cards-container" class="cards-grid"></div>
+        </div>
     </div>
 
     <!-- شاشة الفوز -->
     <div id="win-screen" class="overlay">
-        <div class="modal" style="border-top-color: var(--primary);">
-            <div style="font-size:4rem; margin-bottom:15px;">🇩🇿🎉</div>
-            <h2 style="color:var(--primary); font-size: 1.6rem; margin: 0 0 10px;">وصل القطار بسلام!</h2>
-            <p style="color:#64748b; font-size: 1rem; margin-bottom: 20px;">
-                مبروك! لقد أتممت رحلة الاستقلال بنجاح وأثبتت معرفتك بتاريخ بلادك.
-            </p>
-            <button class="btn-start" onclick="location.reload()">لعب مجدداً ↺</button>
-        </div>
+        <div class="start-logo" style="background:#dcfce7; color:#166534;">🏆</div>
+        <h1 style="color:var(--primary); margin:0;">نصر تاريخي!</h1>
+        <p style="color:#64748b; margin:15px 0 30px; line-height:1.6; max-width:300px;">
+            مبارك! لقد وصلت إلى محطة الاستقلال.<br>
+            بفضل وعيك، أدركت كيف تحولت المظاهرات إلى "تغريدة نصر" سمعها العالم أجمع.
+        </p>
+        <button class="btn-next" onclick="location.reload()">إلعب مرة أخرى ↺</button>
     </div>
 
     <!-- شاشة الخسارة -->
     <div id="lose-screen" class="overlay">
-        <div class="modal">
-            <div style="font-size:4rem; margin-bottom:15px; filter:grayscale(1);">🚂</div>
-            <h2 style="color:var(--secondary); font-size: 1.6rem; margin: 0 0 10px;">توقف القطار!</h2>
-            <p style="color:#64748b; font-size: 1rem; margin-bottom: 20px;">
-                للأسف نفذت المحاولات. راجع معلوماتك التاريخية وحاول مرة أخرى.
-            </p>
-            <button class="btn-start" style="background:#475569;" onclick="location.reload()">إعادة المحاولة ↺</button>
-        </div>
+        <div class="start-logo" style="background:#fee2e2; color:#b91c1c;">🚂</div>
+        <h1 style="color:var(--secondary); margin:0;">توقف القطار</h1>
+        <p style="color:#64748b; margin:15px 0 30px;">
+            التاريخ لا يرحم الأخطاء!<br>حاول مجدداً لتتعلم المزيد عن تاريخ بلادك.
+        </p>
+        <button class="btn-next" style="background:#475569;" onclick="location.reload()">إعادة المحاولة ↺</button>
     </div>
 
     <script>
-        // بيانات المراحل (مطابقة تماماً للنسخة الأصلية)
+        /* بيانات موسعة لـ 8 محطات تغطي كل التفاصيل */
         const Levels = [
             {
-                type: 'seq', title: "التسلسل الزمني", desc: "رتب أحداث المظاهرات حسب تواريخها:",
-                slots: ["04 نوفمبر 1960", "09 ديسمبر 1960", "10 ديسمبر 1960", "11 ديسمبر 1960", "20 ديسمبر 1960"],
-                ans: [1, 2, 3, 4, 5],
-                items: [
-                    {id:1, txt:"مشروع ديغول 'الجزائر جزائرية'"}, {id:2, txt:"انطلاق الشرارة (عين تموشنت)"},
-                    {id:3, txt:"اتساع المظاهرات (وهران)"}, {id:4, txt:"الذروة والمعركة الفاصلة (العاصمة)"}, {id:5, txt:"انتصار القضية في الأمم المتحدة"}
-                ]
-            },
-            {
-                type: 'seq', title: "المسار الجغرافي", desc: "كيف انتقلت شعلة المظاهرات عبر المدن؟",
-                slots: ["نقطة الانطلاق", "اليوم الأول", "اليوم الثاني", "اليوم الثالث", "التعميم"],
-                ans: [1, 2, 3, 4, 5],
-                items: [
-                    {id:1, txt:"عين تموشنت"}, {id:2, txt:"تلمسان"}, {id:3, txt:"وهران (الحمري)"},
-                    {id:4, txt:"الجزائر العاصمة (بلكور والقصبة)"}, {id:5, txt:"باقي ولايات الوطن"}
-                ]
-            },
-            {
-                type: 'quiz', title: "رموز السيادة", desc: "سؤال حول الرموز التي رفعت في المظاهرات:",
-                q: "ما هو الرمز الذي رفعه المتظاهرون لأول مرة بكثافة أمام الصحافة العالمية؟",
+                // المحطة 1: نوفمبر 1960
+                type: 'quiz', 
+                title: "المحطة 1: الفخ السياسي", 
+                desc: "نوفمبر 1960: أطلق ديغول فكرة 'الجزائر جزائرية'. ماذا كان هدفه الخفي؟",
+                q: "ماذا كان ديغول يحاول أن يخلق بقراره هذا؟",
                 ans: 'B',
-                opts: [{id:'A', txt:"لافتات اقتصادية"}, {id:'B', txt:"العلم الوطني الجزائري 🇩🇿"}, {id:'C', txt:"صور الجنرال ديغول"}]
+                opts: [
+                    {id:'A', txt:"جيش جزائري قوي"}, 
+                    {id:'B', txt:"قوة ثالثة تابعة لفرنسا"}, 
+                    {id:'C', txt:"حكومة إسلامية"}
+                ],
+                fact: {
+                    title: "هل تعلم؟ 🤔",
+                    desc: "كان ديغول يريد إيهام العالم بأن الجزائريين يرفضون جبهة التحرير، لكن الشعب كان له رأي آخر!"
+                }
             },
             {
-                type: 'seq', title: "نتائج المظاهرات", desc: "رتب الآثار المترتبة على هذه الأحداث:",
-                slots: ["سياسياً (الداخل)", "عسكرياً", "دبلوماسياً (الخارج)", "استراتيجياً", "النتيجة النهائية"],
-                ans: [1, 2, 3, 4, 5],
+                // المحطة 2: الانطلاق (9 ديسمبر) - معدلة لسؤال كويز
+                type: 'quiz', 
+                title: "المحطة 2: صدمة عين تموشنت", 
+                desc: "9 ديسمبر 1960: وصل ديغول إلى عين تموشنت ليروج لمشروعه، لكن المفاجأة كانت بانتظاره.",
+                q: "لماذا انطلقت الشرارة الأولى للمظاهرات من هذه المدينة الصعيرة تحديداً؟",
+                ans: 'B', 
+                opts: [
+                    {id:'A', txt:"لأنها مقر الحكومة المؤقتة"}, 
+                    {id:'B', txt:"لأنها كانت أول محطة لزيارة ديغول"}, 
+                    {id:'C', txt:"بسبب نزاع تجاري محلي"}
+                ],
+                fact: {
+                    title: "استقبال صاخب 📢",
+                    desc: "بدل الترحيب، وجد ديغول نفسه محاصراً بالجماهير تهتف 'الجزائر مسلمة'، مما اضطره لقطع زيارته للمدينة واختصار البروتوكول."
+                }
+            },
+            {
+                // المحطة 3: 10 ديسمبر (التوسع)
+                type: 'quiz', 
+                title: "المحطة 3: اشتعال الغرب", 
+                desc: "10 ديسمبر: انتقل اللهيب لمدن أخرى. أي مدينة شهدت تصعيداً كبيراً؟",
+                q: "مدينة في الغرب الجزائري عاشت يوماً تاريخياً من المواجهات في 10 ديسمبر:",
+                ans: 'A',
+                opts: [
+                    {id:'A', txt:"وهران"}, 
+                    {id:'B', txt:"عنابة"}, 
+                    {id:'C', txt:"بسكرة"}
+                ],
+                fact: {
+                    title: "امتداد الغضب 🔥",
+                    desc: "توسعت المظاهرات في وهران والشلف (الأصنام سابقاً)، وبدأت حشود العاصمة تتجمع في حي بلكور استعداداً للانفجار الكبير."
+                }
+            },
+            {
+                // المحطة 4: 11 ديسمبر (العاصمة)
+                type: 'seq', 
+                title: "المحطة 4: طوفان العاصمة", 
+                desc: "11 ديسمبر: الذروة! اختر الأحياء الثلاثة التي قادت المظاهرات في العاصمة:",
+                slots: ["الحي الشعبي ", "الحي العتيق", "الحي الشعبي "],
+                ans: [1, 2, 3],
                 items: [
-                    {id:1, txt:"سقوط خرافة 'الجزائر فرنسية'"}, {id:2, txt:"فك الخناق عن الجبال"},
-                    {id:3, txt:"تدويل القضية واعتراف الأمم المتحدة"}, {id:4, txt:"إجبار فرنسا على التفاوض"}, {id:5, txt:"حتمية الاستقلال"}
-                ]
+                    {id:1, txt:"بلكور (بلوزداد)"}, 
+                    {id:2, txt:"القصبة"}, 
+                    {id:3, txt:"باب الواد"}
+                ],
+                fact: {
+                    title: "الصحافة تشهد 📸",
+                    desc: "نزل الشعب للشوارع بقوة أدهشت الصحفيين الأجانب، ورفعوا شعار 'تحيا الجزائر حرة مستقلة' لأول مرة أمام الكاميرات."
+                }
+            },
+            {
+                // المحطة 5: دور المرأة (رمزية)
+                type: 'quiz', 
+                title: "المحطة 5: صوت الثورة", 
+                desc: "لم تكن المعركة بالسلاح فقط. ما هو 'السلاح الصوتي' الذي أرعب الجنود؟",
+                q: "وصفت المرأة بأنها المحرك الأساسي للمظاهرات بفضل:",
+                ans: 'C',
+                opts: [
+                    {id:'A', txt:"الخطابات السياسية"}, 
+                    {id:'B', txt:"المفاوضات"}, 
+                    {id:'C', txt:"الزغاريد "}
+                ],
+                fact: {
+                    title: "زغاريد الرعب 📢",
+                    desc: "كانت زغاريد النساء تدوي في الشوارع الضيقة، مما خلق جواً من الحماس للجزائريين والرعب للجنود الفرنسيين."
+                }
+            },
+            {
+                // المحطة 6: الرموز (العلم والطفل)
+                type: 'quiz', 
+                title: "المحطة 6: راية الشهداء", 
+                desc: "العلم الوطني كان سيد الموقف. تذكر قصة الطفل البطل:",
+                q: "طفل (10 سنوات) استشهد وهو يحاول استعادة العلم من جندي:",
+                ans: 'A',
+                opts: [
+                    {id:'A', txt:"فريد مغراوي"}, 
+                    {id:'B', txt:"عمر الصغير"}, 
+                    {id:'C', txt:"حسيبة بن بوعلي"}
+                ],
+                fact: {
+                    title: "عناق العلم 🇩🇿",
+                    desc: "استشهد الطفل فريد مغراوي في العاصمة، وتقول الروايات أن العلم التف حول جسده الصغير عند سقوطه."
+                }
+            },
+            {
+                // المحطة 7: 12 ديسمبر (الرحيل)
+                type: 'quiz', 
+                title: "المحطة 7: هروب ديغول", 
+                desc: "بعد أن رأى ديغول الحقيقة، غادر الجزائر معترفاً بالفشل. من أي مدينة؟",
+                q: "غادر ديغول الجزائر يوم 12 ديسمبر من مدينة:",
+                ans: 'B',
+                opts: [
+                    {id:'A', txt:"الجزائر العاصمة"}, 
+                    {id:'B', txt:"عنابة"}, 
+                    {id:'C', txt:"تلمسان"}
+                ],
+                fact: {
+                    title: "نهاية الوهم 👋",
+                    desc: "غادر ديغول وهو مقتنع أن 'الجزائر الفرنسية' انتهت، وأن التفاوض مع جبهة التحرير هو الحل الوحيد."
+                }
+            },
+            {
+                // المحطة 8: 20 ديسمبر (النصر الأممي) - معاد صياغتها لتكون واضحة
+                type: 'seq', 
+                title: "المحطة 8: العالم يعترف", 
+                desc: "المظاهرات لم تكن مجرد غضب عابر، بل حققت نصراً دبلوماسياً حاسماً. رتب الأحداث والنتائج:",
+                slots: ["النتيجة المباشرة للمظاهرات", "القرار الدولي الحاسم (20 ديسمبر)", "الأثر النهائي"],
+                ans: [1, 2, 3],
+                items: [
+                    {id:1, txt:"إسماع صوت الشعب للعالم"}, 
+                    {id:2, txt:"الأمم المتحدة تعترف بحق تقرير المصير"}, 
+                    {id:3, txt:"انطلاق مفاوضات الاستقلال (إيفيان)"}
+                ],
+                fact: {
+                    title: "تغريدة النصر 🕊",
+                    desc: "كانت المظاهرات بمثابة 'استفتاء شعبي' مباشر، أجبر الأمم المتحدة على الاعتراف بحق الجزائر في الاستقلال بعد أسبوع واحد فقط."
+                }
             }
         ];
 
@@ -519,15 +517,20 @@
 
             start() {
                 document.getElementById('start-screen').classList.remove('active');
-                const ui = document.getElementById('game-ui');
-                ui.style.display = 'flex';
+                document.getElementById('game-ui').style.display = 'flex';
                 this.load(0);
+                this.updateTrainUI(); // تأكد من تحديث القطار عند البدء
             },
 
             load(idx) {
                 this.lvl = idx; this.step = 0; this.tries = 2;
                 this.renderUI();
                 this.updateTrainUI();
+                // تمرير القطار للمحطة الحالية
+                setTimeout(() => {
+                    const st = document.getElementById(`st-${this.lvl + 1}`);
+                    if(st) st.scrollIntoView({behavior: "smooth", inline: "center"});
+                }, 300);
             },
 
             renderUI() {
@@ -535,42 +538,33 @@
                 document.getElementById('lvl-title').innerText = data.title;
                 document.getElementById('lvl-desc').innerText = data.desc;
                 document.getElementById('lives').innerText = this.tries;
+                document.getElementById('stage-name').innerText = `المحطة ${this.lvl + 1}`;
                 
-                // تحديث اسم المرحلة أسفل القطار
-                document.getElementById('current-stage-name').innerText = data.title;
-
-                const slotsCont = document.getElementById('slots-container');
                 const cardsCont = document.getElementById('cards-container');
-                slotsCont.innerHTML = ''; cardsCont.innerHTML = '';
+                cardsCont.innerHTML = '';
+                document.querySelector('.game-scroll-area').scrollTop = 0;
 
                 if(data.type === 'seq') {
-                    // إنشاء الخانات
-                    data.slots.forEach((label, i) => {
-                        slotsCont.innerHTML += `
-                        <div class="slot ${i===0?'active':''}" id="s-${i}">
-                            <div class="slot-num">${i+1}</div>
-                            <div class="slot-text" data-label="${label}">${label}</div>
-                        </div>`;
-                    });
-                    // خلط وإنشاء البطاقات
+                    this.renderSeqSlot();
                     let arr = [...data.items].sort(()=>Math.random()-0.5);
                     arr.forEach(item => {
                         let div = document.createElement('div');
                         div.className = 'option-card'; div.innerText = item.txt;
-                        div.onclick = (e) => this.check(item, e.target);
+                        div.onclick = (e) => this.checkSeq(item, e.target);
                         cardsCont.appendChild(div);
                     });
-                    cardsCont.style.gridTemplateColumns = "1fr 1fr"; 
+                    cardsCont.style.gridTemplateColumns = "1fr 1fr";
                 } else {
-                    // نظام الكويز
+                    const slotsCont = document.getElementById('slots-container');
                     slotsCont.innerHTML = `
-                    <div class="slot active" style="padding:25px; height:auto; display:flex; justify-content:center; text-align:center; border-style:solid; border-color:var(--primary);">
-                        <h3 style="margin:0; color:var(--text-main); font-size:1.1rem; line-height:1.6;">${data.q}</h3>
+                    <div class="slot active" style="padding:20px; min-height:100px; text-align:center; border-color:var(--primary); background:#f0fdf4;">
+                        <h3 style="margin:0; font-size:1.1rem; line-height:1.5; color:var(--text-main);">${data.q}</h3>
                     </div>`;
+                    
                     data.opts.forEach(opt => {
                         let div = document.createElement('div');
                         div.className = 'option-card'; div.innerText = opt.txt;
-                        div.style.fontSize = "1.1rem"; // تكبير خط الخيارات في الكويز
+                        div.style.minHeight = "70px"; div.style.fontSize = "1rem";
                         div.onclick = () => this.checkQuiz(opt.id);
                         cardsCont.appendChild(div);
                     });
@@ -578,30 +572,28 @@
                 }
             },
 
-            check(item, el) {
-                const correct = Levels[this.lvl].ans[this.step];
-                if(item.id === correct) {
-                    this.showToast("أحسنت! إجابة صحيحة ✅", "success");
-                    
-                    const slot = document.getElementById(`s-${this.step}`);
-                    slot.querySelector('.slot-text').innerText = item.txt;
-                    slot.classList.remove('active'); slot.classList.add('filled');
-                    
-                    // إخفاء البطاقة بتأثير بسيط
-                    el.style.transform = "scale(0.9)"; el.style.opacity = "0";
-                    setTimeout(()=> el.style.visibility = 'hidden', 200);
-                    
-                    this.step++;
-                    
-                    if(this.step >= Levels[this.lvl].slots.length) {
-                        setTimeout(() => this.nextLvl(), 800);
-                    } else {
-                        const nextSlot = document.getElementById(`s-${this.step}`);
-                        if(nextSlot) {
-                            nextSlot.classList.add('active');
-                            nextSlot.scrollIntoView({behavior:'smooth', block:'center'});
-                        }
-                    }
+            renderSeqSlot() {
+                const data = Levels[this.lvl];
+                const slotsCont = document.getElementById('slots-container');
+                slotsCont.innerHTML = ''; 
+
+                if(this.step < data.slots.length) {
+                    const label = data.slots[this.step];
+                    slotsCont.innerHTML = `
+                    <div class="slot active" id="current-slot">
+                        <div class="slot-num">${this.step + 1}</div>
+                        <div class="slot-text">
+                            <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">${label}</div>
+                            <div id="slot-ans" style="color:var(--primary); font-weight:900;">؟؟؟</div>
+                        </div>
+                    </div>`;
+                }
+            },
+
+            checkSeq(item, el) {
+                const correctId = Levels[this.lvl].ans[this.step];
+                if(item.id === correctId) {
+                    this.success(el, item.txt);
                 } else {
                     this.fail();
                 }
@@ -609,81 +601,84 @@
 
             checkQuiz(id) {
                 if(id === Levels[this.lvl].ans) {
-                    this.showToast("إجابة دقيقة! ممتاز ✅", "success");
-                    setTimeout(() => this.nextLvl(), 800);
+                    this.toast("✅ إجابة ممتازة!");
+                    setTimeout(() => this.showFact(), 600);
                 } else {
                     this.fail();
                 }
             },
 
+            success(el, txt) {
+                this.toast("✅ صحيح!");
+                document.getElementById('slot-ans').innerText = txt;
+                document.getElementById('current-slot').classList.remove('active');
+                document.getElementById('current-slot').classList.add('filled');
+                el.style.opacity = '0'; el.style.pointerEvents = 'none';
+                
+                this.step++;
+                setTimeout(() => {
+                    if(this.step >= Levels[this.lvl].slots.length) {
+                        this.showFact();
+                    } else {
+                        this.renderSeqSlot();
+                    }
+                }, 800);
+            },
+
             fail() {
                 this.tries--;
                 document.getElementById('lives').innerText = this.tries;
-                this.showToast("خطأ! حاول مجدداً ❌", "error");
-                
-                // اهتزاز واجهة اللعب
+                this.toast("❌ خطأ! حاول مرة أخرى", "error");
                 const ui = document.getElementById('game-ui');
                 ui.style.transform = "translateX(5px)";
                 setTimeout(()=>ui.style.transform="translateX(-5px)", 50);
                 setTimeout(()=>ui.style.transform="translateX(0)", 100);
 
                 if(this.tries <= 0) {
-                    setTimeout(() => {
-                        document.getElementById('lose-screen').classList.add('active');
-                    }, 500);
+                    setTimeout(() => document.getElementById('lose-screen').classList.add('active'), 500);
                 }
             },
 
-            nextLvl() {
-                if(this.lvl < 3) this.load(this.lvl + 1);
-                else {
-                    this.lvl = 4;
+            showFact() {
+                const data = Levels[this.lvl].fact;
+                document.getElementById('fact-title').innerText = data.title;
+                document.getElementById('fact-desc').innerText = data.desc;
+                document.getElementById('fact-screen').style.display = 'flex';
+            },
+
+            nextLvlConfirm() {
+                document.getElementById('fact-screen').style.display = 'none';
+                if(this.lvl < 7) { // 0 to 7 = 8 levels
+                    this.load(this.lvl + 1);
+                } else {
+                    this.lvl = 8; 
                     this.updateTrainUI();
-                    setTimeout(() => {
-                        document.getElementById('win-screen').classList.add('active');
-                    }, 1000);
+                    setTimeout(() => document.getElementById('win-screen').classList.add('active'), 500);
                 }
             },
 
             updateTrainUI() {
-                // حساب النسبة المئوية
-                let pct = this.lvl * 25;
-                if(this.lvl === 4) pct = 100;
+                let pct = (this.lvl / 7) * 100; 
+                if(this.lvl >= 8) pct = 100;
 
                 document.getElementById('train-icon').style.right = pct + "%";
                 document.getElementById('track-fill').style.width = pct + "%";
 
-                for(let i=1; i<=4; i++) {
+                for(let i=1; i<=8; i++) {
                     const st = document.getElementById(`st-${i}`);
-                    st.className = 'station'; // reset classes
-                    
-                    if(i <= this.lvl) {
-                        st.classList.add('passed');
-                        st.innerHTML = "✔";
-                    } else if(i === this.lvl + 1) {
-                        st.classList.add('active');
-                        st.innerHTML = i;
-                    } else {
-                        st.innerHTML = i;
-                    }
+                    st.className = 'station';
+                    if(i <= this.lvl) { st.classList.add('passed'); st.innerHTML = "✔"; }
+                    else if(i === this.lvl + 1) { st.classList.add('active'); st.innerHTML = i; }
+                    else { st.innerHTML = i; }
                 }
             },
 
-            showToast(msg, type) {
+            toast(msg, type) {
                 const t = document.getElementById('toast');
                 t.innerText = msg;
-                t.style.display = 'block';
                 t.style.background = type === 'error' ? '#ef4444' : '#22c55e';
-                
-                // Trigger animation
-                requestAnimationFrame(() => {
-                    t.classList.add('show');
-                });
-
-                setTimeout(() => {
-                    t.classList.remove('show');
-                    setTimeout(() => t.style.display = 'none', 300);
-                }, 2000);
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 1500);
             }
         };
     </script>
